@@ -152,7 +152,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="cGraphicsCore.cpp" />
+    <ClCompile Include="consoleHandler.cpp" />
+    <ClCompile Include="cSprite.cpp" />
     <ClCompile Include="main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="cGraphicsCore.h" />
+    <ClInclude Include="consoleHandler.h" />
+    <ClInclude Include="cSprite.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
