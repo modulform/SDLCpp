@@ -1,7 +1,5 @@
 #include "cSprite.h"
 
-
-
 cSprite::cSprite(SDL_Texture* texture, float x, float y, int w, int h, float nominalVel)
 {
 	mTexture = texture;
