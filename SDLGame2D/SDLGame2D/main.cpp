@@ -82,52 +82,54 @@ int main(int, char**)
 	{
 		while (SDL_PollEvent(&e) != 0)
 		{
-			switch (e.type)
+			if (e.type == SDL_QUIT)
 			{
-			case SDL_QUIT:
 				quit = true;
-				break;
-			case SDL_KEYDOWN:
-				switch (e.key.keysym.sym)
-				{
-					case SDLK_RIGHT:
-						spritePlayer->SetVelX(1.0f);
-						break;
-					case SDLK_LEFT:
-						spritePlayer->SetVelX(-1.0f);
-						break;
-					case SDLK_DOWN:
-						spritePlayer->SetVelY(1.0f);
-						break;
-					case SDLK_UP:
-						spritePlayer->SetVelY(-1.0f);
-						break;
-				}
-				break;
-			case SDL_KEYUP:
-				switch (e.key.keysym.sym)
-				{
-					case SDLK_RIGHT:
-						if (spritePlayer->GetVelX() > 0)
-							spritePlayer->SetVelX(0);
-						break;
-					case SDLK_LEFT:
-						if (spritePlayer->GetVelX() < 0)
-							spritePlayer->SetVelX(0);
-						break;
-					case SDLK_DOWN:
-						if (spritePlayer->GetVelY() > 0)
-							spritePlayer->SetVelY(0);
-						break;
-					case SDLK_UP:
-						if (spritePlayer->GetVelY() < 0)
-							spritePlayer->SetVelY(0);
-						break;
-				}
-				break;
 			}
-
 		}
+
+		//check keyboard input
+		const Uint8* currentKeyStates = SDL_GetKeyboardState(NULL);
+		if (currentKeyStates[SDL_SCANCODE_UP] == 1)
+		{
+			spritePlayer->SetVelY(-1.0f);
+		}
+		if (currentKeyStates[SDL_SCANCODE_UP] == 0)
+		{
+			if (spritePlayer->GetVelY() < 0)
+				spritePlayer->SetVelY(0);
+		}
+
+		if (currentKeyStates[SDL_SCANCODE_DOWN] == 1)
+		{
+			spritePlayer->SetVelY(1.0f);
+		}
+		if (currentKeyStates[SDL_SCANCODE_DOWN] == 0)
+		{
+			if (spritePlayer->GetVelY() > 0)
+				spritePlayer->SetVelY(0);
+		}
+
+		if (currentKeyStates[SDL_SCANCODE_RIGHT] == 1)
+		{
+			spritePlayer->SetVelX(1.0f);
+		}
+		if (currentKeyStates[SDL_SCANCODE_RIGHT] == 0)
+		{
+			if (spritePlayer->GetVelX() > 0)
+				spritePlayer->SetVelX(0);
+		}
+
+		if (currentKeyStates[SDL_SCANCODE_LEFT] == 1)
+		{
+			spritePlayer->SetVelX(-1.0f);
+		}
+		if (currentKeyStates[SDL_SCANCODE_LEFT] == 0)
+		{
+			if (spritePlayer->GetVelX() < 0)
+				spritePlayer->SetVelX(0);
+		}
+
 		//Apply movement
 		spritePlayer->Move();
 		//Render new frame
