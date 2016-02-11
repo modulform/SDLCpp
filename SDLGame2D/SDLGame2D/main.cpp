@@ -73,25 +73,66 @@ int main(int, char**)
 	SDL_Event e;			//Event handler
 
 							//CREATE TEST SPRITE
-	cSprite* spritePlayer = new cSprite(gCore->getTexture("PLAYER"), 10.0f, 10.0f, 64, 64);
-	cSprite* spriteBrick1 = new cSprite(gCore->getTexture("BRICK"), 100.0f, 100.0f, 32, 32);
-	cSprite* spriteBrick2 = new cSprite(gCore->getTexture("BRICK"), 132.0f, 100.0f, 32, 32);
+	cSprite* spritePlayer = new cSprite(gCore->getTexture("PLAYER"), 10.0f, 10.0f, 64, 64, 0.01f);
+	cSprite* spriteBrick1 = new cSprite(gCore->getTexture("BRICK"), 100.0f, 100.0f, 32, 32, 0);
+	cSprite* spriteBrick2 = new cSprite(gCore->getTexture("BRICK"), 132.0f, 100.0f, 32, 32, 0);
 	//!TEST SPRITE
 
 	while (!quit)
 	{
 		while (SDL_PollEvent(&e) != 0)
 		{
-			if (e.type == SDL_QUIT)
+			switch (e.type)
 			{
+			case SDL_QUIT:
 				quit = true;
+				break;
+			case SDL_KEYDOWN:
+				switch (e.key.keysym.sym)
+				{
+					case SDLK_RIGHT:
+						spritePlayer->SetVelX(1.0f);
+						break;
+					case SDLK_LEFT:
+						spritePlayer->SetVelX(-1.0f);
+						break;
+					case SDLK_DOWN:
+						spritePlayer->SetVelY(1.0f);
+						break;
+					case SDLK_UP:
+						spritePlayer->SetVelY(-1.0f);
+						break;
+				}
+				break;
+			case SDL_KEYUP:
+				switch (e.key.keysym.sym)
+				{
+					case SDLK_RIGHT:
+						if (spritePlayer->GetVelX() > 0)
+							spritePlayer->SetVelX(0);
+						break;
+					case SDLK_LEFT:
+						if (spritePlayer->GetVelX() < 0)
+							spritePlayer->SetVelX(0);
+						break;
+					case SDLK_DOWN:
+						if (spritePlayer->GetVelY() > 0)
+							spritePlayer->SetVelY(0);
+						break;
+					case SDLK_UP:
+						if (spritePlayer->GetVelY() < 0)
+							spritePlayer->SetVelY(0);
+						break;
+				}
+				break;
 			}
+
 		}
+		//Apply movement
+		spritePlayer->Move();
 		//Render new frame
 		SDL_RenderClear(gCore->getRenderer());
 		spritePlayer->DrawSprite(gCore->getRenderer());
-		spriteBrick1->DrawSprite(gCore->getRenderer());
-		spriteBrick2->DrawSprite(gCore->getRenderer());
 		SDL_RenderPresent(gCore->getRenderer());
 	}
 
