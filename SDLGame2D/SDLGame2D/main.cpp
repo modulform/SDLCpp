@@ -2,16 +2,15 @@
 #include <SDL/SDL_image.h>
 #include <string>
 
+#include "cSprite.h"		//general sprite class
 #include "cGraphicsCore.h"	//handles graphics core functionality like renderer and textures
 #include "consoleHandler.h"	//handles console output (debug output)
-#include "cSprite.h"		//general sprite class
 
 #define SCREEN_WIDTH 800
 #define SCREEN_HEIGHT 400
 
 SDL_Window* gWindow = nullptr;
 cGraphicsCore* gCore = nullptr;
-
 
 int initSDL()
 {
@@ -39,7 +38,6 @@ int loadMedia()
 {
 	logToConsole("INF - Loading media...", nullptr);
 	gCore->addTexture("PLAYER", "img\\player1.png");
-	gCore->addTexture("BRICK", "img\\brick32.png");
 
 	return 0;
 }
@@ -72,10 +70,8 @@ int main(int, char**)
 	bool quit = false;		//main loop flag
 	SDL_Event e;			//Event handler
 
-							//CREATE TEST SPRITE
+	//CREATE TEST SPRITE
 	cSprite* spritePlayer = new cSprite(gCore->getTexture("PLAYER"), 10.0f, 10.0f, 64, 64, 0.01f);
-	cSprite* spriteBrick1 = new cSprite(gCore->getTexture("BRICK"), 100.0f, 100.0f, 32, 32, 0);
-	cSprite* spriteBrick2 = new cSprite(gCore->getTexture("BRICK"), 132.0f, 100.0f, 32, 32, 0);
 	//!TEST SPRITE
 
 	while (!quit)

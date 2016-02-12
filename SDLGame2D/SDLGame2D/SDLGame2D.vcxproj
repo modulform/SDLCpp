@@ -152,12 +152,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="cGameManager.cpp" />
     <ClCompile Include="cGraphicsCore.cpp" />
     <ClCompile Include="consoleHandler.cpp" />
     <ClCompile Include="cSprite.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="cGameManager.h" />
     <ClInclude Include="cGraphicsCore.h" />
     <ClInclude Include="consoleHandler.h" />
     <ClInclude Include="cSprite.h" />
