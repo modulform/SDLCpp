@@ -9,30 +9,7 @@
 #define SCREEN_WIDTH 800
 #define SCREEN_HEIGHT 400
 
-SDL_Window* gWindow = nullptr;
 cGraphicsCore* gCore = nullptr;
-
-int initSDL()
-{
-	if (SDL_Init(SDL_INIT_VIDEO) != 0)
-	{
-		logToConsole("ERR - SDL_Init ", SDL_GetError());
-		return 1;
-	}
-
-	gWindow = SDL_CreateWindow("2D Game Sample", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
-	if (gWindow == nullptr)
-	{
-		logToConsole("ERR - SDL_CreateWindow ", SDL_GetError());
-		return 1;
-	}
-	else
-	{
-		gCore = new cGraphicsCore(gWindow);
-	}
-
-	return 0;
-}
 
 int loadMedia()
 {
@@ -42,25 +19,19 @@ int loadMedia()
 	return 0;
 }
 
-void closeSDL()
-{
-	delete(gCore);
-
-	SDL_DestroyWindow(gWindow);
-	gWindow = nullptr;
-
-	IMG_Quit();
-	SDL_Quit();
-}
-
 int main(int, char**)
 {
-	//initialize SDL and report success
-	if (initSDL() == 0)
+	//boot up graphics engine
+	logToConsole("INF - Initializing graphics core...", nullptr);
+	gCore = new cGraphicsCore();
+	if (gCore->initGraphics(SCREEN_WIDTH, SCREEN_HEIGHT) != 0)
 	{
-		logToConsole("SUC - SDL initialized successfully.", nullptr);
+		logToConsole("ERR - Failed to initialize graphics engine ", "cGraphicsCore->initGraphics failed.");
+		return 1;
 	}
+	logToConsole("SUC - Successfully initialized graphics core.", nullptr);
 
+	logToConsole("INF - Loading media...", nullptr);
 	//load media here
 	if (loadMedia() == 0)
 	{
@@ -135,8 +106,10 @@ int main(int, char**)
 	}
 
 
-	//Close SDL
-	closeSDL();
+	//Shut down graphics engine
+	gCore->shutdownGraphics();
+	delete(gCore);
+	gCore = nullptr;
 
 	return 0;
 }

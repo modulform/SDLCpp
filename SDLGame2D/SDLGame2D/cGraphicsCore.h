@@ -16,8 +16,14 @@ struct texEntry
 class cGraphicsCore
 {
 public:
-	cGraphicsCore(SDL_Window* window);
+	cGraphicsCore();
 	~cGraphicsCore();
+
+	///<summar>Initializes SDL framework and creates a window of specified size</summary>
+	int initGraphics(int winWidth, int winHeight);
+
+	///<summary>Shuts down SDL and destroys the window
+	int shutdownGraphics();
 
 	///<summary>Returns the renderer pointer of the cGraphicsCore class</summary>
 	SDL_Renderer* getRenderer();

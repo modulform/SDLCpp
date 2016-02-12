@@ -1,26 +1,48 @@
 #include "cGraphicsCore.h"
 
 
-cGraphicsCore::cGraphicsCore(SDL_Window* window)
+cGraphicsCore::cGraphicsCore()
 {
-	mWindow = window;	//get window pointer from parameter list
-	
-	// initialize renderer and PNG image processing
+
+}
+
+int cGraphicsCore::initGraphics(int winWidth, int winHeight)
+{
+	//initialize SDL framework
+	if (SDL_Init(SDL_INIT_VIDEO) != 0)
+	{
+		logToConsole("ERR - SDL_Init ", SDL_GetError());
+		return 1;
+	}
+
+	//initalize PNG support
+	int imgFlags = IMG_INIT_PNG;
+	if (!(IMG_Init(imgFlags) & imgFlags))
+	{
+		logToConsole("ERR - IMG_Init ", SDL_GetError());
+	}
+
+	//create application window
+	mWindow = SDL_CreateWindow("2D Game Sample", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, winWidth, winHeight, SDL_WINDOW_SHOWN);
+	if (mWindow == nullptr)
+	{
+		logToConsole("ERR - SDL_CreateWindow ", SDL_GetError());
+		return 1;
+	}
+
+	// create renderer
 	mRenderer = SDL_CreateRenderer(mWindow, -1, SDL_RENDERER_ACCELERATED);
 	if (mRenderer == nullptr)
 	{
 		logToConsole("ERR - CreateRenderer ", SDL_GetError());
+		return 1;
 	}
 	else
 	{
 		SDL_SetRenderDrawColor(mRenderer, 0x00, 0x00, 0x00, 0xFF);
-
-		int imgFlags = IMG_INIT_PNG;
-		if (!(IMG_Init(imgFlags) & imgFlags))
-		{
-			logToConsole("ERR - IMG_Init ", SDL_GetError());
-		}
 	}
+
+	return 0;
 }
 
 SDL_Renderer* cGraphicsCore::getRenderer()
@@ -83,6 +105,17 @@ SDL_Texture* cGraphicsCore::getTexture(std::string name)
 		return nullptr;
 	}
 	return nullptr;
+}
+
+int cGraphicsCore::shutdownGraphics()
+{
+	SDL_DestroyWindow(mWindow);
+	mWindow = nullptr;
+
+	IMG_Quit();
+	SDL_Quit();
+
+	return 0;
 }
 
 cGraphicsCore::~cGraphicsCore()
