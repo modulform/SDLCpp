@@ -21,7 +21,7 @@ int loadMedia()
 
 int main(int, char**)
 {
-	//boot up graphics engine
+	//BOOT UP GRAPHICS ENGINE
 	logToConsole("INF - Initializing graphics core...", nullptr);
 	gCore = new cGraphicsCore();
 	if (gCore->initGraphics(SCREEN_WIDTH, SCREEN_HEIGHT) != 0)
@@ -32,7 +32,8 @@ int main(int, char**)
 	logToConsole("SUC - Successfully initialized graphics core.", nullptr);
 
 	logToConsole("INF - Loading media...", nullptr);
-	//load media here
+
+	//LOAD MEDIA
 	if (loadMedia() == 0)
 	{
 		logToConsole("SUC - Successfully loaded media.", nullptr);
@@ -55,7 +56,7 @@ int main(int, char**)
 			}
 		}
 
-		//check keyboard input
+		//CHECK KEYBOARD INPUT
 		const Uint8* currentKeyStates = SDL_GetKeyboardState(NULL);
 		if (currentKeyStates[SDL_SCANCODE_UP] == 1)
 		{
