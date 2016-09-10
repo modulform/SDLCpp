@@ -58,9 +58,10 @@ int main(int, char**)
 
 		//CHECK KEYBOARD INPUT
 		const Uint8* currentKeyStates = SDL_GetKeyboardState(NULL);
+		const float tempVel = 5.0f;
 		if (currentKeyStates[SDL_SCANCODE_UP] == 1)
 		{
-			spritePlayer->SetVelY(-1.0f);
+			spritePlayer->SetVelY(-tempVel);
 		}
 		if (currentKeyStates[SDL_SCANCODE_UP] == 0)
 		{
@@ -70,7 +71,7 @@ int main(int, char**)
 
 		if (currentKeyStates[SDL_SCANCODE_DOWN] == 1)
 		{
-			spritePlayer->SetVelY(1.0f);
+			spritePlayer->SetVelY(tempVel);
 		}
 		if (currentKeyStates[SDL_SCANCODE_DOWN] == 0)
 		{
@@ -80,7 +81,7 @@ int main(int, char**)
 
 		if (currentKeyStates[SDL_SCANCODE_RIGHT] == 1)
 		{
-			spritePlayer->SetVelX(1.0f);
+			spritePlayer->SetVelX(tempVel);
 		}
 		if (currentKeyStates[SDL_SCANCODE_RIGHT] == 0)
 		{
@@ -90,7 +91,7 @@ int main(int, char**)
 
 		if (currentKeyStates[SDL_SCANCODE_LEFT] == 1)
 		{
-			spritePlayer->SetVelX(-1.0f);
+			spritePlayer->SetVelX(-tempVel);
 		}
 		if (currentKeyStates[SDL_SCANCODE_LEFT] == 0)
 		{
