@@ -5,11 +5,14 @@
 #include "cSprite.h"		//general sprite class
 #include "cGraphicsCore.h"	//handles graphics core functionality like renderer and textures
 #include "consoleHandler.h"	//handles console output (debug output)
+#include "cSpriteManager.h" //handles the main sprite list and sprite handling
 
 #define SCREEN_WIDTH 800
 #define SCREEN_HEIGHT 400
 
 cGraphicsCore* gCore = nullptr;
+cSpriteManager* spriteManager = nullptr;
+
 
 int loadMedia()
 {
@@ -32,6 +35,10 @@ int main(int, char**)
 	}
 	logToConsole("SUC - Successfully initialized graphics core.", nullptr);
 
+	logToConsole("INF - Initializing sprite manager...", nullptr);
+	spriteManager = new cSpriteManager();
+	logToConsole("SUC - Successfully initialized graphics core.", nullptr);
+
 	logToConsole("INF - Loading media...", nullptr);
 
 	//LOAD MEDIA
@@ -45,7 +52,9 @@ int main(int, char**)
 
 	//CREATE TEST SPRITE
 	cSprite* spritePlayer = new cSprite(gCore->getTexture("PLAYER"), 10.0f, 10.0f, 64, 64, 0.01f);
+	spriteManager->addSprite(spritePlayer);
 	cSprite* spriteBrick = new cSprite(gCore->getTexture("BRICK"), 100.0f, 100.0f, 128, 32, 0.00f);
+	spriteManager->addSprite(spriteBrick);
 	//!TEST SPRITE
 
 	while (!quit)
@@ -61,7 +70,7 @@ int main(int, char**)
 		//CHECK KEYBOARD INPUT
 		const Uint8* currentKeyStates = SDL_GetKeyboardState(NULL);
 		const float tempVel = 5.0f;
-		if (currentKeyStates[SDL_SCANCODE_UP] == 1)
+		if (currentKeyStates[SDL_SCANCODE_UP] == 1)		//UP = move player sprite up
 		{
 			spritePlayer->SetVelY(-tempVel);
 		}
@@ -71,7 +80,7 @@ int main(int, char**)
 				spritePlayer->SetVelY(0);
 		}
 
-		if (currentKeyStates[SDL_SCANCODE_DOWN] == 1)
+		if (currentKeyStates[SDL_SCANCODE_DOWN] == 1)	//DOWN = move player sprite down
 		{
 			spritePlayer->SetVelY(tempVel);
 		}
@@ -81,7 +90,7 @@ int main(int, char**)
 				spritePlayer->SetVelY(0);
 		}
 
-		if (currentKeyStates[SDL_SCANCODE_RIGHT] == 1)
+		if (currentKeyStates[SDL_SCANCODE_RIGHT] == 1)	//RIGHT = move player sprite right
 		{
 			spritePlayer->SetVelX(tempVel);
 		}
@@ -91,7 +100,7 @@ int main(int, char**)
 				spritePlayer->SetVelX(0);
 		}
 
-		if (currentKeyStates[SDL_SCANCODE_LEFT] == 1)
+		if (currentKeyStates[SDL_SCANCODE_LEFT] == 1)	//LEFT = move player sprite left
 		{
 			spritePlayer->SetVelX(-tempVel);
 		}
@@ -100,13 +109,16 @@ int main(int, char**)
 			if (spritePlayer->GetVelX() < 0)
 				spritePlayer->SetVelX(0);
 		}
+		if (currentKeyStates[SDL_SCANCODE_ESCAPE] == 1)	//ESC = exit application
+		{
+			quit = true;
+		}
 
 		//Apply movement
 		spritePlayer->Move();
 		//Render new frame
 		SDL_RenderClear(gCore->getRenderer());
-		spritePlayer->DrawSprite(gCore->getRenderer());
-		spriteBrick->DrawSprite(gCore->getRenderer());
+		spriteManager->redrawSprites(gCore);
 		SDL_RenderPresent(gCore->getRenderer());
 	}
 
