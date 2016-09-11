@@ -44,6 +44,17 @@ void cSprite::Move()
 	mPosY = mPosY + (mVelY * mNominalVel);
 }
 
+SDL_Rect cSprite::getBoundingBox() //updates and returns the sprites bounding box
+{
+	SDL_Rect temp;
+	temp.x = mPosX;
+	temp.y = mPosY;
+	temp.w = mWidth;
+	temp.h = mHeight;
+
+	return temp;
+}
+
 cSprite::~cSprite()
 {
 }

@@ -15,6 +15,8 @@ public:
 	float GetVelX();							//get current velocity in x-direction
 	float GetVelY();							//get current velocity in y-direction
 	void Move();								//add the current velocity vector to the position vector
+	SDL_Rect getBoundingBox();
+
 private:
 	SDL_Texture* mTexture;	//Sprite texture
 	float mPosX;			//x-position

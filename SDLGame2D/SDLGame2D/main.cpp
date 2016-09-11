@@ -15,6 +15,7 @@ int loadMedia()
 {
 	logToConsole("INF - Loading media...", nullptr);
 	gCore->addTexture("PLAYER", "img\\player1.png");
+	gCore->addTexture("BRICK", "img\\brick128.png");
 
 	return 0;
 }
@@ -44,6 +45,7 @@ int main(int, char**)
 
 	//CREATE TEST SPRITE
 	cSprite* spritePlayer = new cSprite(gCore->getTexture("PLAYER"), 10.0f, 10.0f, 64, 64, 0.01f);
+	cSprite* spriteBrick = new cSprite(gCore->getTexture("BRICK"), 100.0f, 100.0f, 128, 32, 0.00f);
 	//!TEST SPRITE
 
 	while (!quit)
@@ -104,6 +106,7 @@ int main(int, char**)
 		//Render new frame
 		SDL_RenderClear(gCore->getRenderer());
 		spritePlayer->DrawSprite(gCore->getRenderer());
+		spriteBrick->DrawSprite(gCore->getRenderer());
 		SDL_RenderPresent(gCore->getRenderer());
 	}
 
