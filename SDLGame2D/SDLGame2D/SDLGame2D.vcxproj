@@ -152,17 +152,27 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="collisionManager.cpp" />
+    <ClCompile Include="cEnemy.cpp" />
     <ClCompile Include="cGameManager.cpp" />
     <ClCompile Include="cGraphicsCore.cpp" />
     <ClCompile Include="consoleHandler.cpp" />
+    <ClCompile Include="cPlayer.cpp" />
     <ClCompile Include="cSprite.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="collisionManager.h" />
+    <ClInclude Include="cEnemy.h" />
     <ClInclude Include="cGameManager.h" />
     <ClInclude Include="cGraphicsCore.h" />
     <ClInclude Include="consoleHandler.h" />
+    <ClInclude Include="cPlayer.h" />
     <ClInclude Include="cSprite.h" />
+    <ClInclude Include="globals.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Notes.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

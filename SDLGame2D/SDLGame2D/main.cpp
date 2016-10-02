@@ -1,27 +1,31 @@
 #include <SDL/SDL.h>
 #include <SDL/SDL_image.h>
 #include <string>
+#include <list>
 
-#include "cSprite.h"		//general sprite class
-#include "cGraphicsCore.h"	//handles graphics core functionality like renderer and textures
-#include "consoleHandler.h"	//handles console output (debug output)
-
-#define SCREEN_WIDTH 800
-#define SCREEN_HEIGHT 400
+#include "globals.h"				//contains global definitions
+#include "cSprite.h"				//general sprite class
+#include "cPlayer.h"				//Child of cSprite: Specific player-sprite implementation
+#include "cEnemy.h"					//Child of cSprite: Specific enemy-sprite implementation
+#include "cGraphicsCore.h"			//handles graphics core functionality like renderer and textures
+#include "consoleHandler.h"			//handles console output (debug output)
+#include "collisionManager.h"		//handles collision detection
 
 cGraphicsCore* gCore = nullptr;
 
 int loadMedia()
 {
 	logToConsole("INF - Loading media...", nullptr);
-	gCore->addTexture("PLAYER", "img\\player1.png");
+	gCore->addTexture("PLAYER", "img\\player2.png");
+	gCore->addTexture("ENEMY", "img\\enemy1.png");
+	gCore->addTexture("ICON_WARNING", "img\\warning.png");
 
 	return 0;
 }
 
 int main(int, char**)
 {
-	//BOOT UP GRAPHICS ENGINE
+	//BOOT UP GRAPHICS CORE
 	logToConsole("INF - Initializing graphics core...", nullptr);
 	gCore = new cGraphicsCore();
 	if (gCore->initGraphics(SCREEN_WIDTH, SCREEN_HEIGHT) != 0)
@@ -42,8 +46,11 @@ int main(int, char**)
 	bool quit = false;		//main loop flag
 	SDL_Event e;			//Event handler
 
+
 	//CREATE TEST SPRITE
-	cSprite* spritePlayer = new cSprite(gCore->getTexture("PLAYER"), 10.0f, 10.0f, 64, 64, 0.01f);
+	cPlayer* spritePlayer = new cPlayer(gCore->getTexture("PLAYER"), 10.0f, 10.0f, 32.0f, 32.0f, 0.01f, true);
+	cEnemy* spriteEnemy = new cEnemy(gCore->getTexture("ENEMY"), 100.0f, 100.0f, 32.0f, 32.0f, 0.01f, true);
+	cSprite* spriteIconWarning = new cSprite(gCore->getTexture("ICON_WARNING"), 20.0f, 300.0f, 32.0f, 32.0f, 0.00f, false);
 	//!TEST SPRITE
 
 	while (!quit)
@@ -100,9 +107,23 @@ int main(int, char**)
 
 		//Apply movement
 		spritePlayer->Move();
+		spriteEnemy->Move();
+
+		//Check collision
+		if (doCollide(spritePlayer, spriteEnemy))
+		{
+			spriteIconWarning->SetIsVisible(true);
+		}
+		else
+		{
+			spriteIconWarning->SetIsVisible(false);
+		}
+		
 		//Render new frame
 		SDL_RenderClear(gCore->getRenderer());
 		spritePlayer->DrawSprite(gCore->getRenderer());
+		spriteEnemy->DrawSprite(gCore->getRenderer());
+		spriteIconWarning->DrawSprite(gCore->getRenderer());
 		SDL_RenderPresent(gCore->getRenderer());
 	}
 

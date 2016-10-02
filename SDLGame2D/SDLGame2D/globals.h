@@ -1,0 +1,9 @@
+#pragma once
+
+#define SCREEN_WIDTH 800
+#define SCREEN_HEIGHT 400
+
+#define SPRITETYPE_DEFAULT 0;
+#define SPRITETYPE_PLAYER 1;
+#define SPRITETYPE_ENEMY 2;
+#define SPRITETYPE_BLOCK 3;

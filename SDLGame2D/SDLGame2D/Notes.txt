@@ -1,0 +1,13 @@
+*******************************************
+Document: Notes.txt - Definitions and notes
+Author: C. Rausch
+Date started: 2016-10-02
+*******************************************
+
+
+SPRITE TYPES
+------------
+00	SPRITETYPE_DEFAULT			Set by cSprite base class constructor
+01	SPRITETYPE_PLAYER			Sprite is Player-Sprite -> cPlayer
+02  SPRITETYPE_ENEMY			Sprite is Enemy-Sprite -> cEnemy
+03	SPRITETYPE_BLOCK			Sprite is Block-Sprite -> cBock
