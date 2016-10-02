@@ -6,6 +6,7 @@
 #include <list>
 
 #include "consoleHandler.h"
+#include "globals.h"
 
 struct texEntry
 {

@@ -51,11 +51,14 @@ int main(int, char**)
 	//Initialize spriteList
 	spriteList.clear();
 
+	//initialize random seed
+	srand(time(NULL));
+
 	//CREATE TEST SPRITE
-	cPlayer* spritePlayer = new cPlayer(gCore->getTexture("PLAYER"), 10.0f, 10.0f, 32.0f, 32.0f, 0.04f, true);
-	cEnemy* spriteEnemy = new cEnemy(gCore->getTexture("ENEMY"), 100.0f, 100.0f, 32.0f, 32.0f, 0.01f, true);
-	cEnemy* spriteEnemy2 = new cEnemy(gCore->getTexture("ENEMY"), 200.0f, 150.0f, 32.0f, 32.0f, 0.02f, true);
-	cSprite* spriteIconWarning = new cSprite(gCore->getTexture("ICON_WARNING"), 20.0f, 300.0f, 32.0f, 32.0f, 0.00f, false);
+	cPlayer* spritePlayer = new cPlayer(gCore->getTexture("PLAYER"), (float)(SCREEN_WIDTH / 2.0f)-16.0f, (float)(SCREEN_HEIGHT / 2.0f)-16.0f, 32.0f, 32.0f, 0.08f, true);
+	cEnemy* spriteEnemy = new cEnemy(gCore->getTexture("ENEMY"), 100.0f, 100.0f, 32.0f, 32.0f, 0.05f, true);
+	cEnemy* spriteEnemy2 = new cEnemy(gCore->getTexture("ENEMY"), 600.0f, 300.0f, 32.0f, 32.0f, 0.04f, true);
+	cSprite* spriteIconWarning = new cSprite(gCore->getTexture("ICON_WARNING"), (SCREEN_WIDTH / 2), (SCREEN_HEIGHT - 50.0f), 32.0f, 32.0f, 0.00f, false);
 	//!TEST SPRITE
 
 	//push sprites to the list

@@ -23,7 +23,7 @@ int cGraphicsCore::initGraphics(int winWidth, int winHeight)
 	}
 
 	//create application window
-	mWindow = SDL_CreateWindow("2D Game Sample", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, winWidth, winHeight, SDL_WINDOW_SHOWN);
+	mWindow = SDL_CreateWindow(WINDOW_TITLE, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, winWidth, winHeight, SDL_WINDOW_SHOWN);
 	if (mWindow == nullptr)
 	{
 		logToConsole("ERR - SDL_CreateWindow ", SDL_GetError());
@@ -31,7 +31,8 @@ int cGraphicsCore::initGraphics(int winWidth, int winHeight)
 	}
 
 	// create renderer
-	mRenderer = SDL_CreateRenderer(mWindow, -1, SDL_RENDERER_ACCELERATED);
+	// Remark (2016-10-02): Added VSYNC for framerate limitation. Seems to lower the CPU usage...better manually cap it?
+	mRenderer = SDL_CreateRenderer(mWindow, -1, SDL_RENDERER_ACCELERATED || SDL_RENDERER_PRESENTVSYNC);
 	if (mRenderer == nullptr)
 	{
 		logToConsole("ERR - CreateRenderer ", SDL_GetError());

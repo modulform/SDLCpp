@@ -1,5 +1,9 @@
 #pragma once
+
+#include <math.h>
 #include "cSprite.h"
+
+
 class cEnemy : public cSprite
 {
 public:
