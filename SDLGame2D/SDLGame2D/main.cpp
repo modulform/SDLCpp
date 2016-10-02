@@ -13,6 +13,8 @@
 
 cGraphicsCore* gCore = nullptr;
 
+std::list<cSprite*> spriteList;
+
 int loadMedia()
 {
 	logToConsole("INF - Loading media...", nullptr);
@@ -46,12 +48,22 @@ int main(int, char**)
 	bool quit = false;		//main loop flag
 	SDL_Event e;			//Event handler
 
+	//Initialize spriteList
+	spriteList.clear();
 
 	//CREATE TEST SPRITE
 	cPlayer* spritePlayer = new cPlayer(gCore->getTexture("PLAYER"), 10.0f, 10.0f, 32.0f, 32.0f, 0.01f, true);
 	cEnemy* spriteEnemy = new cEnemy(gCore->getTexture("ENEMY"), 100.0f, 100.0f, 32.0f, 32.0f, 0.01f, true);
+	cEnemy* spriteEnemy2 = new cEnemy(gCore->getTexture("ENEMY"), 200.0f, 150.0f, 32.0f, 32.0f, 0.02f, true);
 	cSprite* spriteIconWarning = new cSprite(gCore->getTexture("ICON_WARNING"), 20.0f, 300.0f, 32.0f, 32.0f, 0.00f, false);
 	//!TEST SPRITE
+
+	//push sprites to the list
+	spriteList.push_back(spritePlayer);
+	spriteList.push_back(spriteEnemy);
+	spriteList.push_back(spriteEnemy2);
+	spriteList.push_back(spriteIconWarning);
+
 
 	while (!quit)
 	{
@@ -105,26 +117,27 @@ int main(int, char**)
 				spritePlayer->SetVelX(0);
 		}
 
-		//Apply movement
-		spritePlayer->Move();
-		spriteEnemy->Move();
-
 		//Check collision
-		if (doCollide(spritePlayer, spriteEnemy))
+		/*if (doCollide(spritePlayer, spriteEnemy))
 		{
 			spriteIconWarning->SetIsVisible(true);
 		}
 		else
 		{
 			spriteIconWarning->SetIsVisible(false);
-		}
+		}*/
 		
-		//Render new frame
-		SDL_RenderClear(gCore->getRenderer());
-		spritePlayer->DrawSprite(gCore->getRenderer());
-		spriteEnemy->DrawSprite(gCore->getRenderer());
-		spriteIconWarning->DrawSprite(gCore->getRenderer());
-		SDL_RenderPresent(gCore->getRenderer());
+		//RENDER FRAME
+		SDL_RenderClear(gCore->getRenderer());		//clear renderer
+
+		for (std::list<cSprite*>::iterator it = spriteList.begin(); it != spriteList.end(); it++)	//iterate throug spriteList
+		{
+			(*it)->Move();								//move sprite
+			(*it)->DrawSprite(gCore->getRenderer());	//draw sprite
+		}
+
+		SDL_RenderPresent(gCore->getRenderer());	//present frame to screen
+		//END RENDERING FRAME
 	}
 
 

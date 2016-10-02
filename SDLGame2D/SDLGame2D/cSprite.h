@@ -20,7 +20,7 @@ public:
 	float GetPosY();							//get current position on y-axis
 	float GetWidth();							//get current width
 	float GetHeight();							//get current height
-	void Move();								//add the current velocity vector to the position vector
+	virtual void Move();								//add the current velocity vector to the position vector
 	void SetIsVisible(bool value);				//sets the visiblity property
 protected:
 	int mType;				//Sprite type (see definition in Notes.txt)
