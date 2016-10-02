@@ -22,6 +22,12 @@ int cGraphicsCore::initGraphics(int winWidth, int winHeight)
 		logToConsole("ERR - IMG_Init ", SDL_GetError());
 	}
 
+	//initialize TTF rendering support
+	if (TTF_Init() == -1)
+	{
+		logToConsole("ERR - TTF_Init ", TTF_GetError());
+	}
+
 	//create application window
 	mWindow = SDL_CreateWindow(WINDOW_TITLE, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, winWidth, winHeight, SDL_WINDOW_SHOWN);
 	if (mWindow == nullptr)

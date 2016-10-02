@@ -1,5 +1,6 @@
 #include <SDL/SDL.h>
 #include <SDL/SDL_image.h>
+#include <SDL/SDL_ttf.h>
 #include <string>
 #include <list>
 
@@ -55,9 +56,9 @@ int main(int, char**)
 	srand(time(NULL));
 
 	//CREATE TEST SPRITE
-	cPlayer* spritePlayer = new cPlayer(gCore->getTexture("PLAYER"), (float)(SCREEN_WIDTH / 2.0f)-16.0f, (float)(SCREEN_HEIGHT / 2.0f)-16.0f, 32.0f, 32.0f, 0.08f, true);
-	cEnemy* spriteEnemy = new cEnemy(gCore->getTexture("ENEMY"), 100.0f, 100.0f, 32.0f, 32.0f, 0.05f, true);
-	cEnemy* spriteEnemy2 = new cEnemy(gCore->getTexture("ENEMY"), 600.0f, 300.0f, 32.0f, 32.0f, 0.04f, true);
+	cPlayer* spritePlayer = new cPlayer(gCore->getTexture("PLAYER"), (float)(SCREEN_WIDTH / 2.0f)-16.0f, (float)(SCREEN_HEIGHT / 2.0f)-16.0f, 32.0f, 32.0f, 0.06f, true);
+	cEnemy* spriteEnemy = new cEnemy(gCore->getTexture("ENEMY"), 100.0f, 100.0f, 32.0f, 32.0f, 0.04f, true);
+	cEnemy* spriteEnemy2 = new cEnemy(gCore->getTexture("ENEMY"), 600.0f, 300.0f, 32.0f, 32.0f, 0.03f, true);
 	cSprite* spriteIconWarning = new cSprite(gCore->getTexture("ICON_WARNING"), (SCREEN_WIDTH / 2), (SCREEN_HEIGHT - 50.0f), 32.0f, 32.0f, 0.00f, false);
 	//!TEST SPRITE
 
@@ -67,6 +68,20 @@ int main(int, char**)
 	spriteList.push_back(spriteEnemy2);
 	spriteList.push_back(spriteIconWarning);
 
+
+	//TEXT RENDERING TRYOUT
+	//ToDo: Set up a proper text manager
+		/*TTF_Font* font = TTF_OpenFont("fonts\\font.ttf", 12);
+		if (!font) { logToConsole("ERR - Loading font.", TTF_GetError()); }
+		SDL_Color white = { 255, 255, 255 };
+		SDL_Surface* surfaceMessage = TTF_RenderText_Solid(font, "All your base are belong to us.", white);
+		SDL_Texture* textureMessage = SDL_CreateTextureFromSurface(gCore->getRenderer(), surfaceMessage);
+		SDL_Rect rectMessage;
+		rectMessage.x = 10;
+		rectMessage.y = 10;
+		rectMessage.w = 250;
+		rectMessage.h = 24;*/
+	//END TEXT RENDERING
 
 	while (!quit)
 	{
