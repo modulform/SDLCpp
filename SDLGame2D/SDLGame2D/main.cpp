@@ -52,7 +52,7 @@ int main(int, char**)
 	spriteList.clear();
 
 	//CREATE TEST SPRITE
-	cPlayer* spritePlayer = new cPlayer(gCore->getTexture("PLAYER"), 10.0f, 10.0f, 32.0f, 32.0f, 0.01f, true);
+	cPlayer* spritePlayer = new cPlayer(gCore->getTexture("PLAYER"), 10.0f, 10.0f, 32.0f, 32.0f, 0.04f, true);
 	cEnemy* spriteEnemy = new cEnemy(gCore->getTexture("ENEMY"), 100.0f, 100.0f, 32.0f, 32.0f, 0.01f, true);
 	cEnemy* spriteEnemy2 = new cEnemy(gCore->getTexture("ENEMY"), 200.0f, 150.0f, 32.0f, 32.0f, 0.02f, true);
 	cSprite* spriteIconWarning = new cSprite(gCore->getTexture("ICON_WARNING"), 20.0f, 300.0f, 32.0f, 32.0f, 0.00f, false);
@@ -117,16 +117,6 @@ int main(int, char**)
 				spritePlayer->SetVelX(0);
 		}
 
-		//Check collision
-		/*if (doCollide(spritePlayer, spriteEnemy))
-		{
-			spriteIconWarning->SetIsVisible(true);
-		}
-		else
-		{
-			spriteIconWarning->SetIsVisible(false);
-		}*/
-		
 		//RENDER FRAME
 		SDL_RenderClear(gCore->getRenderer());		//clear renderer
 
@@ -135,6 +125,8 @@ int main(int, char**)
 			(*it)->Move();								//move sprite
 			(*it)->DrawSprite(gCore->getRenderer());	//draw sprite
 		}
+
+		spriteIconWarning->SetIsVisible(doCollideSpriteGroup(spritePlayer, spriteList));	//check collision between player and the enemies
 
 		SDL_RenderPresent(gCore->getRenderer());	//present frame to screen
 		//END RENDERING FRAME

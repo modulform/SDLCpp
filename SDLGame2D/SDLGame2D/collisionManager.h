@@ -1,6 +1,8 @@
 #pragma once
 
+#include <list>
 #include "cSprite.h"
 
-bool doCollide(cSprite* sprite1, cSprite* sprite2);
+bool doCollideSpriteSprite(cSprite* sprite1, cSprite* sprite2);
+bool doCollideSpriteGroup(cSprite* sprite, std::list<cSprite*> group);
 
