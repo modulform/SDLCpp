@@ -11,8 +11,10 @@
 #include "cGraphicsCore.h"			//handles graphics core functionality like renderer and textures
 #include "consoleHandler.h"			//handles console output (debug output)
 #include "collisionManager.h"		//handles collision detection
+#include "UserInterfaceManager.h"	//handles user interface management and rendering (for now only text rendering)
 
 cGraphicsCore* gCore = nullptr;
+UserInterfaceManager* UIManager = nullptr;
 
 std::list<cSprite*> spriteList;
 
@@ -22,7 +24,6 @@ int loadMedia()
 	gCore->addTexture("PLAYER", "img\\player2.png");
 	gCore->addTexture("ENEMY", "img\\enemy1.png");
 	gCore->addTexture("ICON_WARNING", "img\\warning.png");
-
 	return 0;
 }
 
@@ -40,6 +41,9 @@ int main(int, char**)
 
 	logToConsole("INF - Loading media...", nullptr);
 
+	//CREATE ADDITIONAL MANAGERS
+	UIManager = new UserInterfaceManager(gCore->getRenderer());
+
 	//LOAD MEDIA
 	if (loadMedia() == 0)
 	{
@@ -51,9 +55,6 @@ int main(int, char**)
 
 	//Initialize spriteList
 	spriteList.clear();
-
-	//initialize random seed
-	srand(time(NULL));
 
 	//CREATE TEST SPRITE
 	cPlayer* spritePlayer = new cPlayer(gCore->getTexture("PLAYER"), (float)(SCREEN_WIDTH / 2.0f)-16.0f, (float)(SCREEN_HEIGHT / 2.0f)-16.0f, 32.0f, 32.0f, 0.06f, true);
@@ -70,19 +71,10 @@ int main(int, char**)
 
 
 	//TEXT RENDERING TRYOUT
-	//ToDo: Set up a proper text manager
-		/*TTF_Font* font = TTF_OpenFont("fonts\\font.ttf", 12);
-		if (!font) { logToConsole("ERR - Loading font.", TTF_GetError()); }
-		SDL_Color white = { 255, 255, 255 };
-		SDL_Surface* surfaceMessage = TTF_RenderText_Solid(font, "All your base are belong to us.", white);
-		SDL_Texture* textureMessage = SDL_CreateTextureFromSurface(gCore->getRenderer(), surfaceMessage);
-		SDL_Rect rectMessage;
-		rectMessage.x = 10;
-		rectMessage.y = 10;
-		rectMessage.w = 250;
-		rectMessage.h = 24;*/
+	UIManager->addTextObject("m.i.n.d.f.l.y 2016", 250.0f, 300.0f);
 	//END TEXT RENDERING
 
+	//BEGIN MAIN GAME LOOP
 	while (!quit)
 	{
 		while (SDL_PollEvent(&e) != 0)
@@ -146,9 +138,11 @@ int main(int, char**)
 
 		spriteIconWarning->SetIsVisible(doCollideSpriteGroup(spritePlayer, spriteList));	//check collision between player and the enemies
 
+		UIManager->RenderObjects(gCore->getRenderer());
+
 		SDL_RenderPresent(gCore->getRenderer());	//present frame to screen
 		//END RENDERING FRAME
-	}
+	}//END MAIN GAME LOOP
 
 
 	//Shut down graphics engine

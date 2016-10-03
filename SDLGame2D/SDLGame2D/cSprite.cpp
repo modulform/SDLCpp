@@ -32,7 +32,7 @@ void cSprite::DrawSprite(SDL_Renderer* renderer)
 {
 	if (isVisible)
 	{
-		SDL_Rect tempRect = { mPosX, mPosY, mWidth, mHeight };
+		SDL_Rect tempRect = { (int)mPosX, (int)mPosY, (int)mWidth, (int)mHeight };
 		SDL_RenderCopy(renderer, mTexture, NULL, &tempRect);
 	}
 }

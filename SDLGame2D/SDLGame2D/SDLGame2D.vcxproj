@@ -160,6 +160,7 @@
     <ClCompile Include="cPlayer.cpp" />
     <ClCompile Include="cSprite.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="UserInterfaceManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="collisionManager.h" />
@@ -170,6 +171,7 @@
     <ClInclude Include="cPlayer.h" />
     <ClInclude Include="cSprite.h" />
     <ClInclude Include="globals.h" />
+    <ClInclude Include="UserInterfaceManager.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Notes.txt" />
