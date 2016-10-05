@@ -17,6 +17,9 @@ cGraphicsCore* gCore = nullptr;
 UserInterfaceManager* UIManager = nullptr;
 
 std::list<cSprite*> spriteList;
+float fFps;
+Uint32 fps_lastTime;
+Uint32 fps_frames;
 
 int loadMedia()
 {
@@ -27,7 +30,7 @@ int loadMedia()
 	return 0;
 }
 
-int main(int, char**)
+int initGlobalObjects()
 {
 	//BOOT UP GRAPHICS CORE
 	logToConsole("INF - Initializing graphics core...", nullptr);
@@ -50,11 +53,26 @@ int main(int, char**)
 		logToConsole("SUC - Successfully loaded media.", nullptr);
 	}
 
-	bool quit = false;		//main loop flag
-	SDL_Event e;			//Event handler
-
 	//Initialize spriteList
 	spriteList.clear();
+
+	//initialize global variables
+	fFps = 0.0f;
+	fps_lastTime = 0;
+	fps_frames = 0;
+
+	return 0;
+}
+
+int main(int, char**)
+{
+	if (initGlobalObjects() == 1)
+	{
+		return 1;			//exit if initialize was not successful
+	}
+
+	bool quit = false;		//main loop flag
+	SDL_Event e;			//Event handler
 
 	//CREATE TEST SPRITE
 	cPlayer* spritePlayer = new cPlayer(gCore->getTexture("PLAYER"), (float)(SCREEN_WIDTH / 2.0f)-16.0f, (float)(SCREEN_HEIGHT / 2.0f)-16.0f, 32.0f, 32.0f, 0.06f, true);
@@ -70,10 +88,13 @@ int main(int, char**)
 	spriteList.push_back(spriteIconWarning);
 
 	//TEXT RENDERING TRYOUT
-	float temp = 60.1234f;
 	UIManager->addObject("m.i.n.d.f.l.y 2016", 655.0f, 380.0f);
-	UIManager->addObject(&temp, 10.0f, 380.0f);
+	UIManager->addObject("FPS: ", 10.0f, 380.0f);
+	UIManager->addObject(&fFps, 55.0f, 380.0f);
 	//END TEXT RENDERING
+
+	//INITIALIZE FRAMES COUNTER
+	fps_lastTime = SDL_GetTicks();
 
 	//BEGIN MAIN GAME LOOP
 	while (!quit)
@@ -143,6 +164,16 @@ int main(int, char**)
 
 		SDL_RenderPresent(gCore->getRenderer());	//present frame to screen
 		//END RENDERING FRAME
+
+		//HANDLE FRAME COUNTER
+		fps_frames++;
+		if (fps_lastTime < SDL_GetTicks() - FPS_INTERVAL * 1000)
+		{
+			fps_lastTime = SDL_GetTicks();
+			fFps = (float)fps_frames;
+			fps_frames = 0;
+		}
+		//END HANDLE FRAME COUNTER
 	}//END MAIN GAME LOOP
 
 
