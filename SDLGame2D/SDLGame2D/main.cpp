@@ -69,9 +69,10 @@ int main(int, char**)
 	spriteList.push_back(spriteEnemy2);
 	spriteList.push_back(spriteIconWarning);
 
-
 	//TEXT RENDERING TRYOUT
-	UIManager->addTextObject("m.i.n.d.f.l.y 2016", 250.0f, 300.0f);
+	float temp = 60.1234f;
+	UIManager->addObject("m.i.n.d.f.l.y 2016", 655.0f, 380.0f);
+	UIManager->addObject(&temp, 10.0f, 380.0f);
 	//END TEXT RENDERING
 
 	//BEGIN MAIN GAME LOOP

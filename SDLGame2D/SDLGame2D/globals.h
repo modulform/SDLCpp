@@ -11,12 +11,3 @@
 #define SPRITETYPE_PLAYER 1
 #define SPRITETYPE_ENEMY 2
 #define SPRITETYPE_BLOCK 3
-
-typedef struct
-{
-	int id;
-	std::string text;
-	float x;
-	float y;
-
-} textObject;

@@ -152,6 +152,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="cFloatUIObject.cpp" />
     <ClCompile Include="collisionManager.cpp" />
     <ClCompile Include="cEnemy.cpp" />
     <ClCompile Include="cGameManager.cpp" />
@@ -159,10 +160,13 @@
     <ClCompile Include="consoleHandler.cpp" />
     <ClCompile Include="cPlayer.cpp" />
     <ClCompile Include="cSprite.cpp" />
+    <ClCompile Include="cTextUIObject.cpp" />
+    <ClCompile Include="cUIObject.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="UserInterfaceManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="cFloatUIObject.h" />
     <ClInclude Include="collisionManager.h" />
     <ClInclude Include="cEnemy.h" />
     <ClInclude Include="cGameManager.h" />
@@ -170,6 +174,8 @@
     <ClInclude Include="consoleHandler.h" />
     <ClInclude Include="cPlayer.h" />
     <ClInclude Include="cSprite.h" />
+    <ClInclude Include="cTextUIObject.h" />
+    <ClInclude Include="cUIObject.h" />
     <ClInclude Include="globals.h" />
     <ClInclude Include="UserInterfaceManager.h" />
   </ItemGroup>

@@ -42,6 +42,15 @@
     <ClCompile Include="UserInterfaceManager.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
+    <ClCompile Include="cUIObject.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="cTextUIObject.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="cFloatUIObject.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cGraphicsCore.h">
@@ -69,6 +78,15 @@
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="UserInterfaceManager.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="cUIObject.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="cTextUIObject.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="cFloatUIObject.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>
