@@ -18,8 +18,8 @@ UserInterfaceManager* UIManager = nullptr;
 
 std::list<cSprite*> spriteList;
 float fFps;
-Uint32 fps_lastTime;
-Uint32 fps_frames;
+Uint32 iFpsLastTime;
+Uint32 iFpsFrameCount;
 
 int loadMedia()
 {
@@ -58,8 +58,8 @@ int initGlobalObjects()
 
 	//initialize global variables
 	fFps = 0.0f;
-	fps_lastTime = 0;
-	fps_frames = 0;
+	iFpsLastTime = 0;
+	iFpsFrameCount = 0;
 
 	return 0;
 }
@@ -94,7 +94,7 @@ int main(int, char**)
 	//END TEXT RENDERING
 
 	//INITIALIZE FRAMES COUNTER
-	fps_lastTime = SDL_GetTicks();
+	iFpsLastTime = SDL_GetTicks();
 
 	//BEGIN MAIN GAME LOOP
 	while (!quit)
@@ -166,12 +166,12 @@ int main(int, char**)
 		//END RENDERING FRAME
 
 		//HANDLE FRAME COUNTER
-		fps_frames++;
-		if (fps_lastTime < SDL_GetTicks() - FPS_INTERVAL * 1000)
+		iFpsFrameCount++;
+		if (iFpsLastTime < SDL_GetTicks() - FPS_INTERVAL * 1000)
 		{
-			fps_lastTime = SDL_GetTicks();
-			fFps = (float)fps_frames;
-			fps_frames = 0;
+			iFpsLastTime = SDL_GetTicks();
+			fFps = (float)iFpsFrameCount;
+			iFpsFrameCount = 0;
 		}
 		//END HANDLE FRAME COUNTER
 	}//END MAIN GAME LOOP
