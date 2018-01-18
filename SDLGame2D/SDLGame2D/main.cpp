@@ -26,6 +26,7 @@ int loadMedia()
 	logToConsole("INF - Loading media...", nullptr);
 	gCore->addTexture("PLAYER", "img\\player2.png");
 	gCore->addTexture("ENEMY", "img\\enemy1.png");
+	gCore->addTexture("BRICK", "img\\brick32.png");
 	gCore->addTexture("ICON_WARNING", "img\\warning.png");
 	return 0;
 }
@@ -76,16 +77,20 @@ int main(int, char**)
 
 	//CREATE TEST SPRITE
 	cPlayer* spritePlayer = new cPlayer(gCore->getTexture("PLAYER"), (float)(SCREEN_WIDTH / 2.0f)-16.0f, (float)(SCREEN_HEIGHT / 2.0f)-16.0f, 32.0f, 32.0f, 0.06f, true);
-	cEnemy* spriteEnemy = new cEnemy(gCore->getTexture("ENEMY"), 100.0f, 100.0f, 32.0f, 32.0f, 0.04f, true);
-	cEnemy* spriteEnemy2 = new cEnemy(gCore->getTexture("ENEMY"), 600.0f, 300.0f, 32.0f, 32.0f, 0.03f, true);
-	cSprite* spriteIconWarning = new cSprite(gCore->getTexture("ICON_WARNING"), (SCREEN_WIDTH / 2), (SCREEN_HEIGHT - 50.0f), 32.0f, 32.0f, 0.00f, false);
+	cSprite* spriteBrick = new cSprite(gCore->getTexture("BRICK"), 500.0f, 350.0f, 32.0f, 32.0f, 0.0f, true);
+	cSprite* spriteBrick2 = new cSprite(gCore->getTexture("BRICK"), 532.0f, 350.0f, 32.0f, 32.0f, 0.0f, true);
+	//cEnemy* spriteEnemy = new cEnemy(gCore->getTexture("ENEMY"), 100.0f, 100.0f, 32.0f, 32.0f, 0.04f, true);
+	//cEnemy* spriteEnemy2 = new cEnemy(gCore->getTexture("ENEMY"), 600.0f, 300.0f, 32.0f, 32.0f, 0.03f, true);
+	//cSprite* spriteIconWarning = new cSprite(gCore->getTexture("ICON_WARNING"), (SCREEN_WIDTH / 2), (SCREEN_HEIGHT - 50.0f), 32.0f, 32.0f, 0.00f, false);
 	//!TEST SPRITE
 
 	//push sprites to the list
 	spriteList.push_back(spritePlayer);
-	spriteList.push_back(spriteEnemy);
-	spriteList.push_back(spriteEnemy2);
-	spriteList.push_back(spriteIconWarning);
+	spriteList.push_back(spriteBrick);
+	spriteList.push_back(spriteBrick2);
+	//spriteList.push_back(spriteEnemy);
+	//spriteList.push_back(spriteEnemy2);
+	//spriteList.push_back(spriteIconWarning);
 
 	//TEXT RENDERING TRYOUT
 	UIManager->addObject("m.i.n.d.f.l.y 2016", 655.0f, 380.0f);
@@ -109,44 +114,19 @@ int main(int, char**)
 
 		//CHECK KEYBOARD INPUT
 		const Uint8* currentKeyStates = SDL_GetKeyboardState(NULL);
-		if (currentKeyStates[SDL_SCANCODE_UP] == 1)
+		if ((currentKeyStates[SDL_SCANCODE_UP] == 1) && (spritePlayer->mIsOnGround))
 		{
-			spritePlayer->SetVelY(-1.0f);
-		}
-		if (currentKeyStates[SDL_SCANCODE_UP] == 0)
-		{
-			if (spritePlayer->GetVelY() < 0)
-				spritePlayer->SetVelY(0);
-		}
-
-		if (currentKeyStates[SDL_SCANCODE_DOWN] == 1)
-		{
-			spritePlayer->SetVelY(1.0f);
-		}
-		if (currentKeyStates[SDL_SCANCODE_DOWN] == 0)
-		{
-			if (spritePlayer->GetVelY() > 0)
-				spritePlayer->SetVelY(0);
+			spritePlayer->SetVelY(-3.0f);
 		}
 
 		if (currentKeyStates[SDL_SCANCODE_RIGHT] == 1)
 		{
 			spritePlayer->SetVelX(1.0f);
 		}
-		if (currentKeyStates[SDL_SCANCODE_RIGHT] == 0)
-		{
-			if (spritePlayer->GetVelX() > 0)
-				spritePlayer->SetVelX(0);
-		}
 
 		if (currentKeyStates[SDL_SCANCODE_LEFT] == 1)
 		{
 			spritePlayer->SetVelX(-1.0f);
-		}
-		if (currentKeyStates[SDL_SCANCODE_LEFT] == 0)
-		{
-			if (spritePlayer->GetVelX() < 0)
-				spritePlayer->SetVelX(0);
 		}
 
 		//RENDER FRAME
@@ -158,7 +138,11 @@ int main(int, char**)
 			(*it)->DrawSprite(gCore->getRenderer());	//draw sprite
 		}
 
-		spriteIconWarning->SetIsVisible(doCollideSpriteGroup(spritePlayer, spriteList));	//check collision between player and the enemies
+		//spriteIconWarning->SetIsVisible(doCollideSpriteGroup(spritePlayer, spriteList));	//check collision between player and the enemies
+		if (doCollideSpriteSprite(spritePlayer, spriteBrick) || doCollideSpriteSprite(spritePlayer, spriteBrick2))
+		{
+			spritePlayer->SetVelY(0.0F);				//TODO: Find out where it collides and set new ground level for ground flag?
+		}
 
 		UIManager->RenderObjects(gCore->getRenderer());
 

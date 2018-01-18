@@ -29,7 +29,7 @@ protected:
 	float mPosY;			//y-position
 	float mVelX;			//velocity in x-direction
 	float mVelY;			//velocity in y-direction
-	float mWidth;				//sprite width
+	float mWidth;			//sprite width
 	float mHeight;			//sprite height
 	float mNominalVel;		//nominal velocity value
 	bool isVisible;			//indicates if the sprite shall be rendered
