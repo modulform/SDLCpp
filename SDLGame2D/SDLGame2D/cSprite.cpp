@@ -4,12 +4,9 @@ cSprite::cSprite()
 {
 	mType = SPRITETYPE_DEFAULT;
 	mTexture = nullptr;
-	mPosX = 0.0f;
-	mPosY = 0.0f;
-	mVelX = 0.0f;
-	mVelY = 0.0f;
-	mWidth = 0.0f;
-	mHeight = 0.0f;
+	mPosition = { 0.0f, 0.0f };
+	mVelocity = { 0.0f, 0.0f };
+	mScale = { 0.0f, 0.0f };
 	mNominalVel = 0.0f;
 	isVisible = true;
 }
@@ -18,69 +15,70 @@ cSprite::cSprite(SDL_Texture* texture, float x, float y, float w, float h, float
 {
 	mType = SPRITETYPE_DEFAULT;
 	mTexture = texture;
-	mPosX = x;
-	mPosY = y;
-	mVelX = 0.0f;
-	mVelY = 0.0f;
-	mWidth = w;
-	mHeight = h;
+	mPosition = { x, y };
+	mVelocity = { 0.0f, 0.0f };
+	mScale = { w,h };
 	mNominalVel = nominalVel;
 	isVisible = visible;
 }
 
-void cSprite::DrawSprite(SDL_Renderer* renderer)
+void cSprite::DrawSprite(cGraphicsCore* graphCore)
 {
 	if (isVisible)
 	{
-		SDL_Rect tempRect = { (int)mPosX, (int)mPosY, (int)mWidth, (int)mHeight };
-		SDL_RenderCopy(renderer, mTexture, NULL, &tempRect);
+		SDL_Rect tempRect = { (int)mPosition.x, (int)mPosition.y, (int)mScale.x, (int)mScale.y };
+		SDL_RenderCopy(graphCore->getRenderer(), mTexture, NULL, &tempRect);
+		//Draw Direction-Vector
+		SDL_SetRenderDrawColor(graphCore->getRenderer(), 255, 0, 0, 0);
+		Vec2 dirVector = getVectorVectorSum(getVectorVectorSum(mPosition, getVectorScalarProduct(mScale,0.5f)), getVectorScalarProduct(mVelocity, 20.0f));
+		graphCore->drawDebugLine(getCenter().x, getCenter().y, dirVector.x, dirVector.y);
 	}
+}
+
+void cSprite::incVelX(float increment)
+{
+	mVelocity.x = mVelocity.x + increment;
+}
+
+void cSprite::incVelY(float increment)
+{
+	mVelocity.y = mVelocity.y + increment;
 }
 
 void cSprite::SetVelX(float vel)
 {
-	mVelX = vel;
+	mVelocity.x = vel;
 }
 
 void cSprite::SetVelY(float vel)
 {
-	mVelY = vel;
+	mVelocity.y = vel;
 }
 
-float cSprite::GetVelX()
+Vec2 cSprite::getVelocity()
 {
-	return mVelX;
+	return mVelocity;
 }
 
-float cSprite::GetVelY()
+Vec2 cSprite::getPosition()
 {
-	return mVelY;
+	return mPosition;
 }
 
-float cSprite::GetPosX()
+Vec2 cSprite::getScale()
 {
-	return mPosX;
+	return mScale;
 }
 
-float cSprite::GetPosY()
+Vec2 cSprite::getCenter()
 {
-	return mPosY;
-}
-
-float cSprite::GetHeight()
-{
-	return mHeight;
-}
-
-float cSprite::GetWidth()
-{
-	return mWidth;
+	return {mPosition.x + (mScale.x * 0.5f), mPosition.y + (mScale.y * 0.5f)};
 }
 
 void cSprite::Move()
 {
-	mPosX = mPosX + (mVelX * mNominalVel);
-	mPosY = mPosY + (mVelY * mNominalVel);
+	//Position = Position + (Velocity * mNominalVel)
+	mPosition = getVectorVectorSum(mPosition, getVectorScalarProduct(mVelocity, mNominalVel));
 }
 
 void cSprite::SetIsVisible(bool value)

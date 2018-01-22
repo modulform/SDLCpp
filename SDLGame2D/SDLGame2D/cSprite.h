@@ -2,6 +2,8 @@
 
 #include <SDL/SDL.h>
 #include "globals.h"
+#include "math2d.h"
+#include "cGraphicsCore.h"
 
 class cSprite
 {
@@ -11,26 +13,23 @@ public:
 	cSprite(SDL_Texture* texture, float x, float y, float w, float h, float nominalVel, bool visible);
 	~cSprite();
 
-	void DrawSprite(SDL_Renderer* renderer);	//render the sprite to the given renderer
+	void DrawSprite(cGraphicsCore* graphCore);	//render the sprite to the given renderer
+	void incVelX(float increment);				//increase x-velocity by increment
+	void incVelY(float increment);				//increase y-velocity by increment
 	void SetVelX(float vel);					//set velocity in x-direction
 	void SetVelY(float vel);					//set velocity in y-direction
-	float GetVelX();							//get current velocity in x-direction
-	float GetVelY();							//get current velocity in y-direction
-	float GetPosX();							//get current position on x-axis
-	float GetPosY();							//get current position on y-axis
-	float GetWidth();							//get current width
-	float GetHeight();							//get current height
-	virtual void Move();								//add the current velocity vector to the position vector
+	Vec2 getVelocity();							//get current velocity
+	Vec2 getPosition();							//get current position
+	Vec2 getScale();							//get current scale (width | height)
+	Vec2 getCenter();							//get the center point of the sprite
+	virtual void Move();						//add the current velocity vector to the position vector
 	void SetIsVisible(bool value);				//sets the visiblity property
 protected:
 	int mType;				//Sprite type (see definition in Notes.txt)
 	SDL_Texture* mTexture;	//Sprite texture
-	float mPosX;			//x-position
-	float mPosY;			//y-position
-	float mVelX;			//velocity in x-direction
-	float mVelY;			//velocity in y-direction
-	float mWidth;			//sprite width
-	float mHeight;			//sprite height
+	Vec2 mPosition;			//Sprite Position
+	Vec2 mVelocity;			//Sprite Velocity
+	Vec2 mScale;			//Sprite Scale (x = width, y = height)
 	float mNominalVel;		//nominal velocity value
 	bool isVisible;			//indicates if the sprite shall be rendered
 };

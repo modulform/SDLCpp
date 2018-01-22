@@ -15,57 +15,75 @@ cPlayer::cPlayer(SDL_Texture* texture, float x, float y, float w, float h, float
 
 void cPlayer::Move()
 {
+	//limit moving speed
+	if (mVelocity.x > 1.5f)
+	{
+		mVelocity.x = 1.5f;
+	}
+
+	if (mVelocity.x < -1.5f)
+	{
+		mVelocity.x = -1.5f;
+	}
+
 	//first move the player...
-	mVelY = mVelY + 0.003F;					//reduce yVelocity by a fixed value (gravity simulation for now)
-	if (mVelX > 0.0f)
+	if (!mIsOnGround)
+	{
+		mVelocity.y = mVelocity.y + 0.003F;					//reduce yVelocity by a fixed value (gravity simulation for now)
+	}
+	else
+	{
+		mVelocity.y = 0.0f;
+	}
+	
+	if (mVelocity.x > 0.0f)
 	{
 		if (mIsOnGround == true)
 		{
-			mVelX = mVelX - 0.002F;
+			mVelocity.x = mVelocity.x - 0.002F;
+		}
+		else
+		{
+			mVelocity.x = mVelocity.x - 0.001F;
 		}
 	}
-	if (mVelX < 0.0f)
+	if (mVelocity.x < 0.0f)
 	{
 		if (mIsOnGround == true)
 		{
-			mVelX = mVelX + 0.002F;
+			mVelocity.x = mVelocity.x + 0.002F;
+		}
+		else
+		{
+			mVelocity.x = mVelocity.x + 0.001F;
 		}
 	}
-	if (abs(mVelX) < 0.0001)
+	if (abs(mVelocity.x) < 0.0001)
 	{
-		mVelX = 0.0f;
+		mVelocity.x = 0.0f;
 	}
 
-	mPosX = mPosX + (mVelX * mNominalVel);
-	mPosY = mPosY + (mVelY * mNominalVel);
-
-
+	//Position = Position + (Velocity * mNominalVel)
+	mPosition = getVectorVectorSum(mPosition, getVectorScalarProduct(mVelocity, mNominalVel));
+	
 	//...then check if the player is outside screen boundaries and set back inside the boundaries
-	if (mPosX < 0.0f)
+	if (mPosition.x < 0.0f)
 	{
-		mPosX = 0.0f;
-		if (!mIsOnGround)
-		{
-			mVelX = -mVelX;
-		}
+		mPosition.x = 0.0f;
 	}
-	else if ((mPosX + mWidth) > SCREEN_WIDTH)
+	else if ((mPosition.x + mScale.x) > SCREEN_WIDTH)
 	{
-		mPosX = SCREEN_WIDTH - mWidth;
-		if (!mIsOnGround)
-		{
-			mVelX = -mVelX;
-		}
+		mPosition.x = SCREEN_WIDTH - mScale.x;
 	}
 
-	if (mPosY < 0.0f)
+	if (mPosition.y < 0.0f)
 	{
-		mPosY = 0.0f;
+		mPosition.y = 0.0f;
 		mIsOnGround = false;
 	}
-	else if ((mPosY + mHeight) > SCREEN_HEIGHT)
+	else if ((mPosition.y + mScale.y) > SCREEN_HEIGHT)
 	{
-		mPosY = SCREEN_HEIGHT - mHeight;
+		mPosition.y = SCREEN_HEIGHT - mScale.y;
 		mIsOnGround = true;
 	}
 	else

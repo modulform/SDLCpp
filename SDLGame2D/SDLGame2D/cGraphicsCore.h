@@ -35,6 +35,10 @@ public:
 
 	///<summary>Returns the texture pointer for a given name</summary>
 	SDL_Texture* getTexture(std::string name);
+
+	///<summary>Draws a red line one pixel of width (debug purposes)</summar>
+	void drawDebugLine(int x1, int y1, int x2, int y2);
+
 private:
 	SDL_Window* mWindow;
 	SDL_Renderer* mRenderer;

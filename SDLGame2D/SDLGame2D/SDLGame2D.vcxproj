@@ -163,6 +163,7 @@
     <ClCompile Include="cTextUIObject.cpp" />
     <ClCompile Include="cUIObject.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="math2d.cpp" />
     <ClCompile Include="UserInterfaceManager.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -177,6 +178,7 @@
     <ClInclude Include="cTextUIObject.h" />
     <ClInclude Include="cUIObject.h" />
     <ClInclude Include="globals.h" />
+    <ClInclude Include="math2d.h" />
     <ClInclude Include="UserInterfaceManager.h" />
   </ItemGroup>
   <ItemGroup>

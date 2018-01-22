@@ -26,7 +26,7 @@ int loadMedia()
 	logToConsole("INF - Loading media...", nullptr);
 	gCore->addTexture("PLAYER", "img\\player2.png");
 	gCore->addTexture("ENEMY", "img\\enemy1.png");
-	gCore->addTexture("BRICK", "img\\brick32.png");
+	gCore->addTexture("BRICK", "img\\brick128.png");
 	gCore->addTexture("ICON_WARNING", "img\\warning.png");
 	return 0;
 }
@@ -77,25 +77,17 @@ int main(int, char**)
 
 	//CREATE TEST SPRITE
 	cPlayer* spritePlayer = new cPlayer(gCore->getTexture("PLAYER"), (float)(SCREEN_WIDTH / 2.0f)-16.0f, (float)(SCREEN_HEIGHT / 2.0f)-16.0f, 32.0f, 32.0f, 0.06f, true);
-	cSprite* spriteBrick = new cSprite(gCore->getTexture("BRICK"), 500.0f, 350.0f, 32.0f, 32.0f, 0.0f, true);
-	cSprite* spriteBrick2 = new cSprite(gCore->getTexture("BRICK"), 532.0f, 350.0f, 32.0f, 32.0f, 0.0f, true);
-	//cEnemy* spriteEnemy = new cEnemy(gCore->getTexture("ENEMY"), 100.0f, 100.0f, 32.0f, 32.0f, 0.04f, true);
-	//cEnemy* spriteEnemy2 = new cEnemy(gCore->getTexture("ENEMY"), 600.0f, 300.0f, 32.0f, 32.0f, 0.03f, true);
-	//cSprite* spriteIconWarning = new cSprite(gCore->getTexture("ICON_WARNING"), (SCREEN_WIDTH / 2), (SCREEN_HEIGHT - 50.0f), 32.0f, 32.0f, 0.00f, false);
+	cSprite* spriteBrick = new cSprite(gCore->getTexture("BRICK"), 500.0f, 350.0f, 128.0f, 32.0f, 0.0f, true);
 	//!TEST SPRITE
 
 	//push sprites to the list
 	spriteList.push_back(spritePlayer);
 	spriteList.push_back(spriteBrick);
-	spriteList.push_back(spriteBrick2);
-	//spriteList.push_back(spriteEnemy);
-	//spriteList.push_back(spriteEnemy2);
-	//spriteList.push_back(spriteIconWarning);
 
 	//TEXT RENDERING TRYOUT
-	UIManager->addObject("m.i.n.d.f.l.y 2016", 655.0f, 380.0f);
-	UIManager->addObject("FPS: ", 10.0f, 380.0f);
-	UIManager->addObject(&fFps, 55.0f, 380.0f);
+	UIManager->addObject("m.i.n.d.f.l.y 2018", 655.0f, 10.0f);
+	UIManager->addObject("FPS: ", 10.0f, 10.0f);
+	UIManager->addObject(&fFps, 55.0f, 10.0f);
 	//END TEXT RENDERING
 
 	//INITIALIZE FRAMES COUNTER
@@ -117,31 +109,34 @@ int main(int, char**)
 		if ((currentKeyStates[SDL_SCANCODE_UP] == 1) && (spritePlayer->mIsOnGround))
 		{
 			spritePlayer->SetVelY(-3.0f);
+			spritePlayer->mIsOnGround = false;
 		}
 
-		if (currentKeyStates[SDL_SCANCODE_RIGHT] == 1)
+		if ((currentKeyStates[SDL_SCANCODE_RIGHT] == 1) /*&& (spritePlayer->mIsOnGround)*/) //air control ON
 		{
-			spritePlayer->SetVelX(1.0f);
+			spritePlayer->incVelX(0.005f);
 		}
 
-		if (currentKeyStates[SDL_SCANCODE_LEFT] == 1)
+		if ((currentKeyStates[SDL_SCANCODE_LEFT] == 1) /*&& (spritePlayer->mIsOnGround)*/) //air control ON
 		{
-			spritePlayer->SetVelX(-1.0f);
+			spritePlayer->incVelX(-0.005f);
 		}
 
 		//RENDER FRAME
+		SDL_SetRenderDrawColor(gCore->getRenderer(), 0, 0, 0, 0);
 		SDL_RenderClear(gCore->getRenderer());		//clear renderer
 
 		for (std::list<cSprite*>::iterator it = spriteList.begin(); it != spriteList.end(); it++)	//iterate throug spriteList
 		{
 			(*it)->Move();								//move sprite
-			(*it)->DrawSprite(gCore->getRenderer());	//draw sprite
+			(*it)->DrawSprite(gCore);	//draw sprite
 		}
 
-		//spriteIconWarning->SetIsVisible(doCollideSpriteGroup(spritePlayer, spriteList));	//check collision between player and the enemies
-		if (doCollideSpriteSprite(spritePlayer, spriteBrick) || doCollideSpriteSprite(spritePlayer, spriteBrick2))
+		CollisionResult tempCol = doCollideSpriteSprite(spritePlayer, spriteBrick);
+		if (tempCol.isColliding)
 		{
-			spritePlayer->SetVelY(0.0F);				//TODO: Find out where it collides and set new ground level for ground flag?
+		//	spritePlayer->SetVelY(0.0F);				//TODO: Find out where it collides and set new ground level for ground flag?
+			gCore->drawDebugLine(100, 100, 100 + tempCol.colVector.x, 100 + tempCol.colVector.y);
 		}
 
 		UIManager->RenderObjects(gCore->getRenderer());

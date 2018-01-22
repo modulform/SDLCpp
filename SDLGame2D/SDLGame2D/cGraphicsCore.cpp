@@ -114,6 +114,14 @@ SDL_Texture* cGraphicsCore::getTexture(std::string name)
 	return nullptr;
 }
 
+void cGraphicsCore::drawDebugLine(int x1, int y1, int x2, int y2)
+{
+	//TODO: get current draw color to set it afterwards (how to do that?)
+	SDL_SetRenderDrawColor(mRenderer, 255, 0, 0, 0);
+	SDL_RenderDrawLine(mRenderer, x1, y1, x2, y2);
+	SDL_SetRenderDrawColor(mRenderer, 0, 0, 0, 0);
+}
+
 int cGraphicsCore::shutdownGraphics()
 {
 	SDL_DestroyWindow(mWindow);
