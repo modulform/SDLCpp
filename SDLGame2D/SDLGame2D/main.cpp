@@ -77,12 +77,12 @@ int main(int, char**)
 
 	//CREATE TEST SPRITE
 	cPlayer* spritePlayer = new cPlayer(gCore->getTexture("PLAYER"), (float)(SCREEN_WIDTH / 2.0f)-16.0f, (float)(SCREEN_HEIGHT / 2.0f)-16.0f, 32.0f, 32.0f, 0.06f, true);
-	cSprite* spriteBrick = new cSprite(gCore->getTexture("BRICK"), 500.0f, 350.0f, 128.0f, 32.0f, 0.0f, true);
+	cSprite* spriteBrick = new cSprite(gCore->getTexture("BRICK"), 500.0f, SCREEN_HEIGHT-32.0f, 128.0f, 32.0f, 0.0f, true);
 	//!TEST SPRITE
 
 	//push sprites to the list
-	spriteList.push_back(spritePlayer);
 	spriteList.push_back(spriteBrick);
+	spriteList.push_back(spritePlayer);
 
 	//TEXT RENDERING TRYOUT
 	UIManager->addObject("m.i.n.d.f.l.y 2018", 655.0f, 10.0f);
@@ -135,8 +135,15 @@ int main(int, char**)
 		CollisionResult tempCol = doCollideSpriteSprite(spritePlayer, spriteBrick);
 		if (tempCol.isColliding)
 		{
-		//	spritePlayer->SetVelY(0.0F);				//TODO: Find out where it collides and set new ground level for ground flag?
-			gCore->drawDebugLine(100, 100, 100 + tempCol.colVector.x, 100 + tempCol.colVector.y);
+			//gCore->drawDebugLine(100, 100, 100 + tempCol.colVector.x, 100 + tempCol.colVector.y);
+			if (tempCol.colVector.y < 32)
+			{
+				spritePlayer->mIsOnGround = true;
+			}
+			else if (tempCol.colVector.x > 0)
+			{
+				spritePlayer->SetVelX(0.0f);
+			}
 		}
 
 		UIManager->RenderObjects(gCore->getRenderer());
