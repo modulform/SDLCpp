@@ -3,7 +3,7 @@
 
 CollisionResult doCollideSpriteSprite(cSprite* sprite1, cSprite* sprite2)
 {
-	CollisionResult helper = { false, {0,0} };
+	CollisionResult helper = { false, none, {0,0} };
 
 	if (sprite1 != sprite2)
 	{
@@ -20,23 +20,43 @@ CollisionResult doCollideSpriteSprite(cSprite* sprite1, cSprite* sprite2)
 
 		// Check edges
 		if (left1 > right2)// Left 1 is right of right 2
-			return { false,{ 0,0 } }; // No collision
+			return helper; // No collision
 
 		if (right1 < left2) // Right 1 is left of left 2 
-			return { false,{ 0,0 } }; // No collision 
+			return helper; // No collision 
 
 		if (top1 > bottom2) // Top 1 is below bottom 2
-			return { false,{ 0,0 } }; // No collision
+			return helper; // No collision
 
 		if (bottom1 < top2) // Bottom 1 is above top 2
-			return { false,{ 0,0 } }; // No collision 
+			return helper; // No collision 
 
 		// None of the above test were true, collision!
+		helper.isColliding = true;
 		// Calculate the collision vector
-		Vec2 vecHelper = getVectorVectorSum(sprite2->getCenter(), getVectorScalarProduct(sprite1->getCenter(), -1.0f));
-		return {true, vecHelper};
+		helper.colVector = getVectorVectorDiff(sprite1->getCenter(), sprite2->getCenter());
+		// Determine collision direction
+		
+		if ((bottom1 >= top2) && (top1 < top2) && (right1 > left2) && (left1 < right2))
+		{
+			helper.colDirection = fromTop;
+		}
+		else if ((top1 <= bottom2) && (bottom1 > bottom2) && (right1 > left2) && (left1 < right2))
+		{
+			helper.colDirection = fromBottom;
+		}
+		if ((right1 >= left2) && (left1 < left2) && (bottom1 > top2) && (top1 < bottom2))
+		{
+			helper.colDirection = fromLeft;
+		}
+		else if ((left1 <= right2) && (right1 > right2) && (bottom1 > top2) && (top1 < bottom2))
+		{
+			helper.colDirection = fromRight;
+		}
+		//return the collisionResult
+		return helper;
 	}
-	return { false,{ 0,0 } };
+	return { false, none, { 0,0 } };
 }
 
 bool doCollideSpriteGroup(cSprite* sprite, std::list<cSprite*> group)
@@ -52,4 +72,36 @@ bool doCollideSpriteGroup(cSprite* sprite, std::list<cSprite*> group)
 	}
 
 	return helper;
+}
+
+cSprite* getNearestSprite(cSprite* sprite1, std::list<cSprite*> spriteList)
+{
+	struct helperDistance {
+		cSprite* sprite = nullptr;
+		float distance = 100000.0f;
+	};
+
+	helperDistance helper;
+
+	if (!spriteList.empty())
+	{
+		for (std::list<cSprite*>::iterator it = spriteList.begin(); it != spriteList.end(); it++)
+		{
+			if ((*it) != sprite1)
+			{
+				float tempDistance = getVectorLength(getVectorVectorDiff(sprite1->getPosition(), (*it)->getPosition()));
+				if (tempDistance <= helper.distance)
+				{
+					helper.sprite = (*it);
+					helper.distance = tempDistance;
+				}
+			}
+		}
+		return helper.sprite;
+	}
+	else
+	{
+		logToConsole("ERR - getNearestSprite(...)","Empty sprite list.");
+		return nullptr;
+	}
 }

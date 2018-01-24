@@ -18,6 +18,8 @@ public:
 	void incVelY(float increment);				//increase y-velocity by increment
 	void SetVelX(float vel);					//set velocity in x-direction
 	void SetVelY(float vel);					//set velocity in y-direction
+	void SetPosX(float pos);					//set position on x
+	void SetPosY(float pos);					//set position on y
 	Vec2 getVelocity();							//get current velocity
 	Vec2 getPosition();							//get current position
 	Vec2 getScale();							//get current scale (width | height)

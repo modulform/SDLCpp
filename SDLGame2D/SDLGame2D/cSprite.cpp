@@ -31,7 +31,7 @@ void cSprite::DrawSprite(cGraphicsCore* graphCore)
 		//Draw Direction-Vector
 		SDL_SetRenderDrawColor(graphCore->getRenderer(), 255, 0, 0, 0);
 		Vec2 dirVector = getVectorVectorSum(getVectorVectorSum(mPosition, getVectorScalarProduct(mScale,0.5f)), getVectorScalarProduct(mVelocity, 20.0f));
-		graphCore->drawDebugLine(getCenter().x, getCenter().y, dirVector.x, dirVector.y);
+		graphCore->drawDebugLine(255, 0, 0, getCenter().x, getCenter().y, dirVector.x, dirVector.y);
 	}
 }
 
@@ -53,6 +53,16 @@ void cSprite::SetVelX(float vel)
 void cSprite::SetVelY(float vel)
 {
 	mVelocity.y = vel;
+}
+
+void cSprite::SetPosX(float pos)
+{
+	mPosition.x = pos;
+}
+
+void cSprite::SetPosY(float pos)
+{
+	mPosition.y = pos;
 }
 
 Vec2 cSprite::getVelocity()

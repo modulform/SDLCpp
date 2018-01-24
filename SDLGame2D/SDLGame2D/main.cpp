@@ -77,11 +77,13 @@ int main(int, char**)
 
 	//CREATE TEST SPRITE
 	cPlayer* spritePlayer = new cPlayer(gCore->getTexture("PLAYER"), (float)(SCREEN_WIDTH / 2.0f)-16.0f, (float)(SCREEN_HEIGHT / 2.0f)-16.0f, 32.0f, 32.0f, 0.06f, true);
-	cSprite* spriteBrick = new cSprite(gCore->getTexture("BRICK"), 500.0f, SCREEN_HEIGHT-32.0f, 128.0f, 32.0f, 0.0f, true);
+	cSprite* spriteBrick = new cSprite(gCore->getTexture("BRICK"), 500.0f, SCREEN_HEIGHT-100.0f, 128.0f, 32.0f, 0.0f, true);
+	cSprite* spriteBrick2 = new cSprite(gCore->getTexture("BRICK"), 0.0f, SCREEN_HEIGHT - 32.0f, 128.0f, 32.0f, 0.0f, true);
 	//!TEST SPRITE
 
 	//push sprites to the list
 	spriteList.push_back(spriteBrick);
+	spriteList.push_back(spriteBrick2);
 	spriteList.push_back(spritePlayer);
 
 	//TEXT RENDERING TRYOUT
@@ -108,7 +110,7 @@ int main(int, char**)
 		const Uint8* currentKeyStates = SDL_GetKeyboardState(NULL);
 		if ((currentKeyStates[SDL_SCANCODE_UP] == 1) && (spritePlayer->mIsOnGround))
 		{
-			spritePlayer->SetVelY(-3.0f);
+			spritePlayer->SetVelY(-3.5f);
 			spritePlayer->mIsOnGround = false;
 		}
 
@@ -122,6 +124,11 @@ int main(int, char**)
 			spritePlayer->incVelX(-0.005f);
 		}
 
+		if (currentKeyStates[SDL_SCANCODE_ESCAPE] == 1)
+		{
+			quit = true;
+		}
+
 		//RENDER FRAME
 		SDL_SetRenderDrawColor(gCore->getRenderer(), 0, 0, 0, 0);
 		SDL_RenderClear(gCore->getRenderer());		//clear renderer
@@ -132,19 +139,37 @@ int main(int, char**)
 			(*it)->DrawSprite(gCore);	//draw sprite
 		}
 
-		CollisionResult tempCol = doCollideSpriteSprite(spritePlayer, spriteBrick);
+		//FIND NEAREST SPRITE AND DRAW LINE FOR DEBUG PURPOSES
+		cSprite* nearestSprite = getNearestSprite(spritePlayer, spriteList);
+
+		if (nearestSprite != nullptr)
+		{
+			gCore->drawDebugLine(0, 255, 0, spritePlayer->getCenter(), nearestSprite->getCenter());
+		}
+
+		//COLLISION DETECTION AND REACTION
+		CollisionResult tempCol = doCollideSpriteSprite(spritePlayer, nearestSprite);
 		if (tempCol.isColliding)
 		{
-			//gCore->drawDebugLine(100, 100, 100 + tempCol.colVector.x, 100 + tempCol.colVector.y);
-			if (tempCol.colVector.y < 32)
+			//react on collision result
+			switch (tempCol.colDirection)
 			{
-				spritePlayer->mIsOnGround = true;
-			}
-			else if (tempCol.colVector.x > 0)
-			{
+			case fromTop:
+				spritePlayer->SetPosY(nearestSprite->getPosition().y - spritePlayer->getScale().y);
+				spritePlayer->mIsOnGround = true;	//...tell the sprite it reached ground
+				break;
+			case fromBottom:
+				spritePlayer->SetVelY(spritePlayer->getVelocity().y * (-0.7f)); //...invert the y-velocity (bounce back)
+				break;
+			case fromLeft:
 				spritePlayer->SetVelX(0.0f);
+				break;
+			case fromRight:
+				spritePlayer->SetVelX(0.0f);
+				break;
 			}
 		}
+		//END COLLISION DETECTION AND REACTION
 
 		UIManager->RenderObjects(gCore->getRenderer());
 
