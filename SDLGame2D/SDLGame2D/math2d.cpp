@@ -23,3 +23,10 @@ Vec2 getVectorScalarProduct(Vec2 v, float s)
 	Vec2 helper = { v.x * s, v.y * s };
 	return helper;
 }
+
+Vec2 getNormalizedVector(Vec2 v)
+{
+	float mag = getVectorLength(v);
+	Vec2 helper = {v.x / mag, v.y / mag};
+	return helper;
+}

@@ -7,52 +7,55 @@ CollisionResult doCollideSpriteSprite(cSprite* sprite1, cSprite* sprite2)
 
 	if (sprite1 != sprite2)
 	{
-		
+		//Calculate Sprite1 bounding-box
 		float left1 = sprite1->getPosition().x;
 		float right1 = left1 + sprite1->getScale().x;
 		float top1 = sprite1->getPosition().y;
 		float bottom1 = top1 + sprite1->getScale().y;
 
+		//Calculate Sprite1 bounding-box of old position (one frame back)
+		float oldLeft1 = sprite1->getOldPosition().x;
+		float oldRight1 = oldLeft1 + sprite1->getScale().x;
+		float oldTop1 = sprite1->getOldPosition().y;
+		float oldBottom1 = oldTop1 + sprite1->getScale().y;
+
+		//Calculate Sprite2 bounding-box
 		float left2 = sprite2->getPosition().x;
 		float right2 = left2 + sprite2->getScale().x;
 		float top2 = sprite2->getPosition().y;
 		float bottom2 = top2 + sprite2->getScale().y;
 
-		// Check edges
-		if (left1 > right2)// Left 1 is right of right 2
-			return helper; // No collision
-
-		if (right1 < left2) // Right 1 is left of left 2 
-			return helper; // No collision 
-
-		if (top1 > bottom2) // Top 1 is below bottom 2
-			return helper; // No collision
-
-		if (bottom1 < top2) // Bottom 1 is above top 2
-			return helper; // No collision 
-
-		// None of the above test were true, collision!
-		helper.isColliding = true;
-		// Calculate the collision vector
-		helper.colVector = getVectorVectorDiff(sprite1->getCenter(), sprite2->getCenter());
-		// Determine collision direction
-		
-		if ((bottom1 >= top2) && (top1 < top2) && (right1 > left2) && (left1 < right2))
+		//AABB collision detection
+		if ((left1 < right2) && (right1 > left2) && (top1 < bottom2) && (bottom1 > top2))
 		{
-			helper.colDirection = fromTop;
+			//collision detected
+			helper.isColliding = true;
+			sprite1->setIsColliding(true);
+			//check which part of the collision was not true one frame back.
+			//This is the one causing the collsion -> collision direction
+			if ((oldRight1 < left2) && (right1 >= left2))
+			{
+				helper.colDirection = fromLeft;
+			}
+			else if ((oldLeft1 > right2) && (left1 < right2))
+			{
+				helper.colDirection = fromRight;
+			}
+			else if ((oldBottom1 < top2) && (bottom1 >= top2))
+			{
+				helper.colDirection = fromTop;
+			}
+			else if ((oldTop1 >= bottom2) && (top1 < bottom2))
+			{
+				helper.colDirection = fromBottom;
+			}
 		}
-		else if ((top1 <= bottom2) && (bottom1 > bottom2) && (right1 > left2) && (left1 < right2))
+		else
 		{
-			helper.colDirection = fromBottom;
+			//no collision detected
+			sprite1->setIsColliding(false);
 		}
-		if ((right1 >= left2) && (left1 < left2) && (bottom1 > top2) && (top1 < bottom2))
-		{
-			helper.colDirection = fromLeft;
-		}
-		else if ((left1 <= right2) && (right1 > right2) && (bottom1 > top2) && (top1 < bottom2))
-		{
-			helper.colDirection = fromRight;
-		}
+
 		//return the collisionResult
 		return helper;
 	}

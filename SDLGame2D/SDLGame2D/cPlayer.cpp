@@ -63,6 +63,8 @@ void cPlayer::Move()
 		mVelocity.x = 0.0f;
 	}
 
+	//Store current position as old position
+	mOldPosition = mPosition;
 	//Position = Position + (Velocity * mNominalVel)
 	mPosition = getVectorVectorSum(mPosition, getVectorScalarProduct(mVelocity, mNominalVel));
 	

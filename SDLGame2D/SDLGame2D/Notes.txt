@@ -11,3 +11,8 @@ SPRITE TYPES
 01	SPRITETYPE_PLAYER			Sprite is Player-Sprite -> cPlayer
 02  SPRITETYPE_ENEMY			Sprite is Enemy-Sprite -> cEnemy
 03	SPRITETYPE_BLOCK			Sprite is Block-Sprite -> cBock
+
+
+TODOs:
+------
+# Collision detection good, but we have player-sprite position jitter when standing on blocks or running in them.

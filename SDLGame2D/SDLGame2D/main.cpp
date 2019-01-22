@@ -79,11 +79,13 @@ int main(int, char**)
 	cPlayer* spritePlayer = new cPlayer(gCore->getTexture("PLAYER"), (float)(SCREEN_WIDTH / 2.0f)-16.0f, (float)(SCREEN_HEIGHT / 2.0f)-16.0f, 32.0f, 32.0f, 0.06f, true);
 	cSprite* spriteBrick = new cSprite(gCore->getTexture("BRICK"), 500.0f, SCREEN_HEIGHT-100.0f, 128.0f, 32.0f, 0.0f, true);
 	cSprite* spriteBrick2 = new cSprite(gCore->getTexture("BRICK"), 0.0f, SCREEN_HEIGHT - 32.0f, 128.0f, 32.0f, 0.0f, true);
+	cSprite* spriteBrick3 = new cSprite(gCore->getTexture("BRICK"), 200.0f, SCREEN_HEIGHT - 150.0f, 128.0f, 32.0f, 0.0f, true);
 	//!TEST SPRITE
 
 	//push sprites to the list
 	spriteList.push_back(spriteBrick);
 	spriteList.push_back(spriteBrick2);
+	spriteList.push_back(spriteBrick3);
 	spriteList.push_back(spritePlayer);
 
 	//TEXT RENDERING TRYOUT
@@ -106,7 +108,7 @@ int main(int, char**)
 			}
 		}
 
-		//CHECK KEYBOARD INPUT
+		//CHECK KEYBOARD INPUT AND APPLY MOVEMENT
 		const Uint8* currentKeyStates = SDL_GetKeyboardState(NULL);
 		if ((currentKeyStates[SDL_SCANCODE_UP] == 1) && (spritePlayer->mIsOnGround))
 		{
@@ -114,14 +116,22 @@ int main(int, char**)
 			spritePlayer->mIsOnGround = false;
 		}
 
-		if ((currentKeyStates[SDL_SCANCODE_RIGHT] == 1) /*&& (spritePlayer->mIsOnGround)*/) //air control ON
+		if ((currentKeyStates[SDL_SCANCODE_RIGHT] == 1) && (!spritePlayer->getIsColliding())/* && (spritePlayer->mIsOnGround)*/) //air control ON
 		{
 			spritePlayer->incVelX(0.005f);
 		}
 
-		if ((currentKeyStates[SDL_SCANCODE_LEFT] == 1) /*&& (spritePlayer->mIsOnGround)*/) //air control ON
+		if ((currentKeyStates[SDL_SCANCODE_LEFT] == 1) && (!spritePlayer->getIsColliding())/* && (spritePlayer->mIsOnGround)*/) //air control ON
 		{
 			spritePlayer->incVelX(-0.005f);
+		}
+
+		if (currentKeyStates[SDL_SCANCODE_DELETE] == 1)
+		{
+			spritePlayer->SetPosX((float)(SCREEN_WIDTH / 2.0f) - 16.0f);
+			spritePlayer->SetPosY((float)(SCREEN_HEIGHT / 2.0f) - 16.0f);
+			spritePlayer->SetVelX(0.0f);
+			spritePlayer->SetVelY(0.0f);
 		}
 
 		if (currentKeyStates[SDL_SCANCODE_ESCAPE] == 1)
@@ -155,16 +165,18 @@ int main(int, char**)
 			switch (tempCol.colDirection)
 			{
 			case fromTop:
-				spritePlayer->SetPosY(nearestSprite->getPosition().y - spritePlayer->getScale().y);
+				spritePlayer->SetPosY(nearestSprite->getPosition().y - spritePlayer->getScale().y-1.0f);
 				spritePlayer->mIsOnGround = true;	//...tell the sprite it reached ground
 				break;
 			case fromBottom:
 				spritePlayer->SetVelY(spritePlayer->getVelocity().y * (-0.7f)); //...invert the y-velocity (bounce back)
 				break;
 			case fromLeft:
+				spritePlayer->SetPosX(spritePlayer->getOldPosition().x);
 				spritePlayer->SetVelX(0.0f);
 				break;
 			case fromRight:
+				spritePlayer->SetPosX(spritePlayer->getOldPosition().x);
 				spritePlayer->SetVelX(0.0f);
 				break;
 			}

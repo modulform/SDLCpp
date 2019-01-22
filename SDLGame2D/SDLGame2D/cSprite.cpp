@@ -75,6 +75,11 @@ Vec2 cSprite::getPosition()
 	return mPosition;
 }
 
+Vec2 cSprite::getOldPosition()
+{
+	return mOldPosition;
+}
+
 Vec2 cSprite::getScale()
 {
 	return mScale;
@@ -85,8 +90,20 @@ Vec2 cSprite::getCenter()
 	return {mPosition.x + (mScale.x * 0.5f), mPosition.y + (mScale.y * 0.5f)};
 }
 
+void cSprite::setIsColliding(bool state)
+{
+	isColliding = state;
+}
+
+bool cSprite::getIsColliding()
+{
+	return isColliding;
+}
+
 void cSprite::Move()
 {
+	//Store current position as old position
+	mOldPosition = mPosition;
 	//Position = Position + (Velocity * mNominalVel)
 	mPosition = getVectorVectorSum(mPosition, getVectorScalarProduct(mVelocity, mNominalVel));
 }
