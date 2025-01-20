@@ -51,6 +51,12 @@
     <ClCompile Include="cFloatUIObject.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
+    <ClCompile Include="math2d.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="cLevelFactory.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cGraphicsCore.h">
@@ -87,6 +93,12 @@
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="cFloatUIObject.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="math2d.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="cLevelFactory.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>

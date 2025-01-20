@@ -1,7 +1,7 @@
 #pragma once
 
-#include <SDL/SDL.h>
-#include <SDL/SDL_ttf.h>
+#include <SDL.h>
+#include <SDL_ttf.h>
 #include <string>
 #include <list>
 #include "globals.h"

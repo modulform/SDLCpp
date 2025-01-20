@@ -9,6 +9,8 @@ cSprite::cSprite()
 	mScale = { 0.0f, 0.0f };
 	mNominalVel = 0.0f;
 	isVisible = true;
+	mAnimationFrames = 0;
+	mAnimRectList = new SDL_Rect[mAnimationFrames];
 }
 
 cSprite::cSprite(SDL_Texture* texture, float x, float y, float w, float h, float nominalVel, bool visible)
@@ -20,14 +22,26 @@ cSprite::cSprite(SDL_Texture* texture, float x, float y, float w, float h, float
 	mScale = { w,h };
 	mNominalVel = nominalVel;
 	isVisible = visible;
+	mAnimationFrames = 0;
+	mAnimRectList = new SDL_Rect[mAnimationFrames];
 }
 
-void cSprite::DrawSprite(cGraphicsCore* graphCore)
+void cSprite::DrawSprite(cGraphicsCore* graphCore, int frame)
 {
 	if (isVisible)
 	{
-		SDL_Rect tempRect = { (int)mPosition.x, (int)mPosition.y, (int)mScale.x, (int)mScale.y };
-		SDL_RenderCopy(graphCore->getRenderer(), mTexture, NULL, &tempRect);
+		//Draw actual sprite if it is visible
+		SDL_Rect tempRect = { (int)mPosition.x, (int)mPosition.y, (int)mScale.x, (int)mScale.y};
+		
+		if ((mAnimationFrames > 0) && (mAnimRectList != nullptr))
+		//if there is animation frames, utilize the mAnimRectList for animation
+		{
+			SDL_RenderCopy(graphCore->getRenderer(), mTexture, &mAnimRectList[0], &tempRect);
+		}
+		else {
+			//if there is no animation, provie NULL as source rectangle in the textue (= take full texture)
+			SDL_RenderCopy(graphCore->getRenderer(), mTexture, NULL, &tempRect);
+		}
 		//Draw Direction-Vector
 		SDL_SetRenderDrawColor(graphCore->getRenderer(), 255, 0, 0, 0);
 		Vec2 dirVector = getVectorVectorSum(getVectorVectorSum(mPosition, getVectorScalarProduct(mScale,0.5f)), getVectorScalarProduct(mVelocity, 20.0f));
@@ -111,6 +125,19 @@ void cSprite::Move()
 void cSprite::SetIsVisible(bool value)
 {
 	isVisible = value;
+}
+
+void cSprite::addAnimRect(SDL_Rect rect, int position)
+{
+	if (mAnimRectList != nullptr)
+	{
+		mAnimRectList[position] = rect;
+	}
+}
+
+void cSprite::setAnimationFrames(int frameCount)
+{
+	mAnimationFrames = frameCount;
 }
 
 cSprite::~cSprite()

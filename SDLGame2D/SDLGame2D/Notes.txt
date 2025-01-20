@@ -16,3 +16,20 @@ SPRITE TYPES
 TODOs:
 ------
 # Collision detection good, but we have player-sprite position jitter when standing on blocks or running in them.
+# Animation: Preperation are done quick and dirty in cSprite->drawSprite(...) by defining a hard-coded tempRect2
+             used for clipping and only show the first 32x32 pixels of the larger texture player_anim.png.
+             Idea: Define a frame counter range that can be set depending on movement direction (right, left, jump etc.)
+                   This frame counter needs to set the clip rect for each rendered frame then. Check VSYNC topic,
+                   the frame rate dropped dramatically when running on a laptop without charger attached.
+# Animation: Introduced a frame counter in main.cpp (to be used for animation frame control
+             No animation: Set cSprite::mAnimationFrames to 0 to disable frame handling for this sprite.
+             Animation:
+                Set cSprite::mAnimationFrame to the number of frames used in the animation (0-based)
+                Use a tile-map as texture, define each animation source rectangle as SDL_Rect (x,y,w,h) and add it to the
+                mAnimRectList via the public method cSprite::mAddAnimRect(SDL_Rect rect, int postion)
+
+
+and a lot of changes in cSprite.cpp (AnimFrameCount, AnimRectList)
+             that contain clip rectangles and handle animation in the end. Current state: Only one rect 0,0,32,32 which
+             actually renders only the first animation frame of the player sprite. But now, blocks are not shown. Why?
+             Check on diffs in sprite and player items. This was neglected by now :-(

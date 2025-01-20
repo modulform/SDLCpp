@@ -1,6 +1,6 @@
-#include <SDL/SDL.h>
-#include <SDL/SDL_image.h>
-#include <SDL/SDL_ttf.h>
+#include <SDL.h>
+#include <SDL_image.h>
+#include <SDL_ttf.h>
 #include <string>
 #include <list>
 
@@ -12,21 +12,25 @@
 #include "consoleHandler.h"			//handles console output (debug output)
 #include "collisionManager.h"		//handles collision detection
 #include "UserInterfaceManager.h"	//handles user interface management and rendering (for now only text rendering)
+#include "cLevelFactory.h"
 
 cGraphicsCore* gCore = nullptr;
 UserInterfaceManager* UIManager = nullptr;
+cLevelFactory* levelFactory = nullptr;
 
 std::list<cSprite*> spriteList;
 float fFps;
 Uint32 iFpsLastTime;
 Uint32 iFpsFrameCount;
+int iAnimFrameCount = 0;
 
 int loadMedia()
 {
 	logToConsole("INF - Loading media...", nullptr);
 	gCore->addTexture("PLAYER", "img\\player2.png");
+	gCore->addTexture("PLAYER_ANIM", "img\\player_anim.png");
 	gCore->addTexture("ENEMY", "img\\enemy1.png");
-	gCore->addTexture("BRICK", "img\\brick128.png");
+	gCore->addTexture("BRICK", "img\\brick32.png");
 	gCore->addTexture("ICON_WARNING", "img\\warning.png");
 	return 0;
 }
@@ -75,21 +79,21 @@ int main(int, char**)
 	bool quit = false;		//main loop flag
 	SDL_Event e;			//Event handler
 
-	//CREATE TEST SPRITE
-	cPlayer* spritePlayer = new cPlayer(gCore->getTexture("PLAYER"), (float)(SCREEN_WIDTH / 2.0f)-16.0f, (float)(SCREEN_HEIGHT / 2.0f)-16.0f, 32.0f, 32.0f, 0.06f, true);
-	cSprite* spriteBrick = new cSprite(gCore->getTexture("BRICK"), 500.0f, SCREEN_HEIGHT-100.0f, 128.0f, 32.0f, 0.0f, true);
-	cSprite* spriteBrick2 = new cSprite(gCore->getTexture("BRICK"), 0.0f, SCREEN_HEIGHT - 32.0f, 128.0f, 32.0f, 0.0f, true);
-	cSprite* spriteBrick3 = new cSprite(gCore->getTexture("BRICK"), 200.0f, SCREEN_HEIGHT - 150.0f, 128.0f, 32.0f, 0.0f, true);
-	//!TEST SPRITE
+	//LOAD AND BUILD LEVEL
+	levelFactory = new cLevelFactory(gCore, &spriteList);
+	levelFactory->buildLevelFromFile("levels\\level1.txt");
 
-	//push sprites to the list
-	spriteList.push_back(spriteBrick);
-	spriteList.push_back(spriteBrick2);
-	spriteList.push_back(spriteBrick3);
+	
+	//CREATE PLAYER TEST SPRITE
+	cPlayer* spritePlayer = new cPlayer(gCore->getTexture("PLAYER_ANIM"), (float)(SCREEN_WIDTH / 2.0f)-16.0f, (float)(SCREEN_HEIGHT / 2.0f)-16.0f, 32.0f, 32.0f, 0.06f, true);
+	SDL_Rect tempRect = { 32,0,32,32 };
+	spritePlayer->addAnimRect(tempRect, 0);
+	spritePlayer->setAnimationFrames(1);
 	spriteList.push_back(spritePlayer);
+	//!TEST SPRITE	
 
 	//TEXT RENDERING TRYOUT
-	UIManager->addObject("m.i.n.d.f.l.y 2018", 655.0f, 10.0f);
+	UIManager->addObject("m.i.n.d.f.l.y 2025", 655.0f, 10.0f);
 	UIManager->addObject("FPS: ", 10.0f, 10.0f);
 	UIManager->addObject(&fFps, 55.0f, 10.0f);
 	//END TEXT RENDERING
@@ -145,8 +149,8 @@ int main(int, char**)
 
 		for (std::list<cSprite*>::iterator it = spriteList.begin(); it != spriteList.end(); it++)	//iterate throug spriteList
 		{
-			(*it)->Move();								//move sprite
-			(*it)->DrawSprite(gCore);	//draw sprite
+			(*it)->Move();				//move sprite
+			(*it)->DrawSprite(gCore, iAnimFrameCount);	//draw sprite
 		}
 
 		//FIND NEAREST SPRITE AND DRAW LINE FOR DEBUG PURPOSES
@@ -158,27 +162,30 @@ int main(int, char**)
 		}
 
 		//COLLISION DETECTION AND REACTION
-		CollisionResult tempCol = doCollideSpriteSprite(spritePlayer, nearestSprite);
-		if (tempCol.isColliding)
+		if (nearestSprite != nullptr)
 		{
-			//react on collision result
-			switch (tempCol.colDirection)
+			CollisionResult tempCol = doCollideSpriteSprite(spritePlayer, nearestSprite);
+			if (tempCol.isColliding)
 			{
-			case fromTop:
-				spritePlayer->SetPosY(nearestSprite->getPosition().y - spritePlayer->getScale().y-1.0f);
-				spritePlayer->mIsOnGround = true;	//...tell the sprite it reached ground
-				break;
-			case fromBottom:
-				spritePlayer->SetVelY(spritePlayer->getVelocity().y * (-0.7f)); //...invert the y-velocity (bounce back)
-				break;
-			case fromLeft:
-				spritePlayer->SetPosX(spritePlayer->getOldPosition().x);
-				spritePlayer->SetVelX(0.0f);
-				break;
-			case fromRight:
-				spritePlayer->SetPosX(spritePlayer->getOldPosition().x);
-				spritePlayer->SetVelX(0.0f);
-				break;
+				//react on collision result
+				switch (tempCol.colDirection)
+				{
+				case fromTop:
+					spritePlayer->SetPosY(nearestSprite->getPosition().y - spritePlayer->getScale().y-1.0f);
+					spritePlayer->mIsOnGround = true;	//...tell the sprite it reached ground
+					break;
+				case fromBottom:
+					spritePlayer->SetVelY(spritePlayer->getVelocity().y * (-0.7f)); //...invert the y-velocity (bounce back)
+					break;
+				case fromLeft:
+					spritePlayer->SetPosX(spritePlayer->getOldPosition().x);
+					spritePlayer->SetVelX(0.0f);
+					break;
+				case fromRight:
+					spritePlayer->SetPosX(spritePlayer->getOldPosition().x);
+					spritePlayer->SetVelX(0.0f);
+					break;
+				}
 			}
 		}
 		//END COLLISION DETECTION AND REACTION
@@ -186,6 +193,7 @@ int main(int, char**)
 		UIManager->RenderObjects(gCore->getRenderer());
 
 		SDL_RenderPresent(gCore->getRenderer());	//present frame to screen
+		iAnimFrameCount = iAnimFrameCount + 1;
 		//END RENDERING FRAME
 
 		//HANDLE FRAME COUNTER
